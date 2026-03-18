@@ -1,0 +1,20 @@
+1:"$Sreact.fragment"
+2:I[88589,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+3:I[32177,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+4:I[53568,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+5:I[823,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+6:I[39955,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+7:I[15775,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+8:I[44683,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+9:I[24630,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+a:I[60341,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+b:I[25050,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+c:I[67467,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+d:I[19849,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+e:I[28792,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+f:I[18667,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+10:I[40123,["/_next/static/chunks/c7ac03cb141c444e.js"],"default"]
+11:I[97367,["/_next/static/chunks/2f236954d6a65e12.js"],"OutletBoundary"]
+12:"$Sreact.suspense"
+0:{"buildId":"b4t-fqANYlKEcSMuXp0Kf","rsc":["$","$1","c",{"children":[[["$","$L2",null,{}],["$","main",null,{"className":"bg-[#FDFBF7]","children":[["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{}],["$","$L6",null,{}],["$","$L7",null,{}],["$","$L8",null,{}],["$","$L9",null,{}],["$","$La",null,{}],["$","$Lb",null,{}],["$","$Lc",null,{}],["$","$Ld",null,{}],["$","$Le",null,{}],["$","$Lf",null,{}],["$","$L10",null,{}]]}],["$","footer",null,{"className":"bg-[var(--super-orange)] text-[var(--super-text)] px-6 lg:px-12 xl:px-20 pt-10 pb-6 relative overflow-hidden","children":[["$","div",null,{"className":"max-w-7xl mx-auto border-t-2 border-[var(--super-text)]/20 pt-10","children":["$","div",null,{"className":"flex flex-col md:flex-row justify-between gap-10 mb-10","children":[["$","div",null,{"className":"flex-1","children":[["$","div",null,{"className":"font-serif font-black text-2xl mb-4 text-white drop-shadow-[2px_2px_0_rgba(45,35,26,1)]","children":"Little Minds."}],["$","p",null,{"className":"font-medium text-[var(--super-text)]/80 max-w-xs mb-6","children":"원장님의 교육 철학을 가장 완벽하게 담아내는 프리미엄 에듀테크."}],["$","div",null,{"className":"flex gap-4 font-bold text-sm text-[var(--super-text)]","children":[["$","a",null,{"href":"#","className":"hover:text-white transition-colors","children":"인스타그램"}],["$","a",null,{"href":"#","className":"hover:text-white transition-colors","children":"블로그"}],["$","a",null,{"href":"#","className":"hover:text-white transition-colors","children":"유튜브"}]]}]]}],["$","div",null,{"className":"flex gap-12 font-bold text-[var(--super-text)]","children":[["$","div",null,{"className":"flex flex-col gap-3","children":[["$","a",null,{"href":"#philosophy","className":"hover:opacity-70 transition-opacity","children":"교육 철학"}],["$","a",null,{"href":"#how-it-works","className":"hover:opacity-70 transition-opacity","children":"도입 과정"}],["$","a",null,{"href":"#results","className":"hover:opacity-70 transition-opacity","children":"도입 성과"}]]}],["$","div",null,{"className":"flex flex-col gap-3","children":[["$","a",null,{"href":"#","className":"hover:opacity-70 transition-opacity","children":"이용약관"}],["$","a",null,{"href":"#","className":"hover:opacity-70 transition-opacity","children":"개인정보방침"}]]}]]}]]}]}],["$","div",null,{"className":"w-full text-center mt-10","children":["$","h1",null,{"className":"font-serif font-black text-[#FF703B] text-[15vw] leading-none select-none tracking-tighter","style":{"WebkitTextStroke":"2px rgba(255,255,255,0.2)"},"children":"littleminds"}]}],["$","div",null,{"className":"text-center mt-4","children":["$","span",null,{"className":"text-[var(--super-text)]/50 font-bold text-xs uppercase","children":"© 2026 Little Minds. All Rights Reserved."}]}]]}]],[["$","script","script-0",{"src":"/_next/static/chunks/c7ac03cb141c444e.js","async":true}]],["$","$L11",null,{"children":["$","$12",null,{"name":"Next.MetadataOutlet","children":"$@13"}]}]]}],"loading":null,"isPartial":false}
+13:null

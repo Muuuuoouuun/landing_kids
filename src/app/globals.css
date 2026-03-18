@@ -1,20 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --cream: #FDFBF7;
-  --dark: #2D3436;
-  --sage: #8C9A8B;
-  --sage-light: #A8B5A7;
+  --cream: #FFFDF8;
+  --dark: #3E2F21;
+  --sage: #A8B5A7;
+  --sage-light: #E1EADD;
   --sage-dark: #6B7A6A;
-  --warm-gray: #636E72;
-  --light-taupe: #E9E4DB;
-  --soft-bg: #F8F7F4;
-  --gold: #C4A265;
-  --gold-light: #D4B87A;
+  --warm-gray: #7A6F62;
+  --light-taupe: #E5D4C4;
+  --soft-bg: #F4EBE1;
+  --gold: #E5A344;
+  --gold-light: #F2CC8F;
+  
+  /* New Superr Inspired Colors */
+  --super-orange: #FF5A1F;
+  --super-brown: #9E7453;
+  --super-pink: #FFC0CB;
+  --super-blue: #E1EFF4;
+  --super-text: #2D231A;
 }
 
 html {
@@ -23,12 +30,13 @@ html {
 
 body {
   font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--super-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 .font-serif {
-  font-family: 'Noto Serif KR', Georgia, serif;
+  font-family: 'Fraunces', 'Noto Serif KR', Georgia, serif;
 }
 
 /* Scroll-triggered fade-in animations */

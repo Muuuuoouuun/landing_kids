@@ -7,35 +7,20 @@ const metrics = [
   {
     title: '학부모 재등록률',
     value: '94%',
-    sub: '도입 학원 평균',
-    desc: 'Little Minds 도입 학원의 학부모 재등록률. 데이터 기반 리포트가 만든 신뢰의 결과입니다.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
-      </svg>
-    ),
+    desc: '도입 학원 평균치',
+    color: 'text-[var(--super-orange)]'
   },
   {
     title: '상담 시간 절감',
     value: '60%',
-    sub: '업무 효율화',
-    desc: '자동 생성 리포트로 상담 준비 시간이 대폭 줄어듭니다. 원장님과 선생님의 시간을 되돌려 드립니다.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-      </svg>
-    ),
+    desc: '리포트 자동화 효과',
+    color: 'text-[var(--super-pink)]'
   },
   {
     title: '신규 원생 유입',
     value: '+35%',
-    sub: '도입 6개월 후',
-    desc: '학부모 입소문 효과. "그 학원은 데이터로 아이를 관리해 준다"는 평판이 신규 등록으로 이어집니다.',
-    icon: (
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-      </svg>
-    ),
+    desc: '도입 6개월 후 입소문',
+    color: 'text-[var(--super-brown)]'
   },
 ];
 
@@ -43,39 +28,58 @@ export default function DataProof() {
   const ref = useReveal();
 
   return (
-    <section id="results" ref={ref} className="py-28 md:py-36 px-6 lg:px-12 xl:px-20 bg-[#F8F7F4] relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <span className="reveal text-[11px] uppercase tracking-[0.3em] text-[#8C9A8B] font-medium block mb-5">
-            Proven Results
-          </span>
-          <h2 className="reveal font-serif text-3xl md:text-5xl text-[#2D3436] leading-tight mb-6">
-            도입 학원이 경험한<br />
-            <span className="italic font-light">실제 변화</span>
-          </h2>
-          <p className="reveal text-[#636E72] font-light text-lg max-w-xl mx-auto">
-            150개 이상의 도입 학원에서 확인된 평균 수치입니다
-          </p>
-        </div>
+    <section id="results" ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-white relative overflow-hidden flex flex-col items-center">
+      
+      {/* Handing over illustration placeholder */}
+      <div className="relative w-full max-w-5xl mx-auto h-[500px] sm:h-[600px] flex items-center justify-center mb-10">
+        
+        {/* Abstract background blobs */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[80%] bg-[#E1EFF4] rounded-full blur-3xl opacity-50 pointer-events-none" />
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* Faux Hand 1 (Left) */}
+        <div className="absolute left-[-10%] sm:left-[5%] md:left-[10%] top-[60%] w-32 md:w-48 h-12 md:h-20 bg-[#D4A373] rounded-full transform rotate-[25deg] shadow-lg z-20" />
+        
+        {/* Faux Hand 2 (Right) */}
+        <div className="absolute right-[-10%] sm:right-[5%] md:right-[10%] top-[40%] w-32 md:w-48 h-12 md:h-20 bg-[#FAEDCB] rounded-full transform -rotate-[25deg] shadow-lg z-0" />
+
+        {/* Center Item (The 'Book' or 'Report') */}
+        <div className="relative z-10 w-64 md:w-80 h-80 md:h-[400px] bg-[var(--cream)] border-4 border-[var(--super-text)] rounded-xl shadow-[12px_12px_0px_0px_var(--super-text)] transform -rotate-3 flex flex-col p-6 cursor-pointer hover:rotate-0 transition-transform duration-500">
+           <div className="w-1/2 h-4 bg-[var(--super-brown)]/20 rounded-full mb-4"></div>
+           <div className="w-3/4 h-8 bg-[var(--super-orange)]/20 rounded-full mb-8"></div>
+           
+           <h3 className="font-serif text-2xl md:text-3xl text-[var(--super-text)] font-black text-center mb-auto leading-tight mt-10">
+             성장 데이터<br/>리포트
+           </h3>
+
+           {/* Floating badges around the book representing data */}
+           <div className="absolute -left-12 top-10 w-24 h-24 bg-[var(--super-orange)] rounded-full border-[3px] border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] flex items-center justify-center transform -rotate-12 animate-float">
+             <span className="text-white font-bold text-xl">94%</span>
+           </div>
+           
+           <div className="absolute -right-8 bottom-20 w-20 h-20 bg-[var(--super-blue)] rounded-xl border-[3px] border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] flex items-center justify-center transform rotate-12 animate-float delay-300">
+             <span className="text-[var(--super-text)] font-bold text-lg">+35%</span>
+           </div>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto text-center relative z-20">
+        <h2 className="reveal font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-8">
+          데이터가 증명하는<br />
+          <span className="text-[var(--super-orange)]">명확한 변화</span>
+        </h2>
+        <p className="reveal text-[var(--warm-gray)] font-medium text-lg mb-16 max-w-xl mx-auto">
+          도입 학원 150곳에서 확인된 수치입니다.<br />막연한 기대가 아닌 확실한 결과로 보답합니다.
+        </p>
+
+        {/* Text Metrics Below */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full border-t-2 border-[var(--super-text)] pt-12">
           {metrics.map((m, i) => (
-            <div
-              key={i}
-              className="reveal group bg-white rounded-3xl p-8 md:p-10 border border-[#E9E4DB]/60 hover:border-[#8C9A8B]/30 hover:shadow-xl hover:shadow-[#8C9A8B]/5 transition-all duration-500"
-              style={{ transitionDelay: `${i * 0.12}s` }}
-            >
-              <div className="flex items-center justify-between mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-[#F2F0EC] flex items-center justify-center text-[#8C9A8B] group-hover:bg-[#8C9A8B] group-hover:text-white transition-all duration-300">
-                  {m.icon}
-                </div>
-                <div className="text-right">
-                  <span className="text-3xl font-serif font-semibold text-[#2D3436]">{m.value}</span>
-                  <span className="block text-xs text-[#8C9A8B] mt-1">{m.sub}</span>
-                </div>
-              </div>
-              <h3 className="text-xl font-semibold text-[#2D3436] mb-3">{m.title}</h3>
-              <p className="text-[#636E72] leading-relaxed text-[15px]">{m.desc}</p>
+            <div key={i} className="reveal text-center" style={{transitionDelay: `${i*0.1}s`}}>
+               <h4 className="text-[var(--super-text)] font-bold mb-2">{m.title}</h4>
+               <div className={`font-serif text-4xl md:text-5xl font-black mb-2 ${m.color}`}>
+                 {m.value}
+               </div>
+               <p className="text-sm text-[var(--warm-gray)] font-medium">{m.desc}</p>
             </div>
           ))}
         </div>
