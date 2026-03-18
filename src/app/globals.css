@@ -6,17 +6,11 @@
 
 :root {
   --cream: #FFFDF8;
-  --dark: #3E2F21;
-  --sage: #A8B5A7;
-  --sage-light: #E1EADD;
-  --sage-dark: #6B7A6A;
   --warm-gray: #7A6F62;
   --light-taupe: #E5D4C4;
-  --soft-bg: #F4EBE1;
-  --gold: #E5A344;
   --gold-light: #F2CC8F;
-  
-  /* New Superr Inspired Colors */
+
+  /* Super Design System */
   --super-orange: #FF5A1F;
   --super-brown: #9E7453;
   --super-pink: #FFC0CB;

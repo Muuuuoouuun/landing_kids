@@ -57,7 +57,7 @@ export default function Hero() {
                <div className="w-full h-8 bg-pink-300 rounded-t-full" /> {/* eraser */}
                <div className="w-full h-2 bg-gray-300" /> {/* metal */}
                <div className="flex-1" />
-               <div className="w-full h-10 bg-[#E5D4C4] style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }}" /> {/* tip */}
+               <div className="w-full h-10 bg-[#E5D4C4]" style={{ clipPath: 'polygon(0 0, 100% 0, 50% 100%)' }} /> {/* tip */}
                <div className="absolute bottom-0 w-2 h-2 bg-black rounded-full" />
             </div>
 

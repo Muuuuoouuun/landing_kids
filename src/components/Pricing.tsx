@@ -19,7 +19,8 @@ const plans = [
     ],
     cta: '도입 상담 신청',
     popular: false,
-    style: 'bg-white border-[#E9E4DB]/60',
+    color: 'bg-[var(--super-blue)]',
+    rotate: '-rotate-1',
   },
   {
     name: 'Professional',
@@ -37,7 +38,8 @@ const plans = [
     ],
     cta: '도입 상담 신청',
     popular: true,
-    style: 'bg-[#2D3436] text-white border-[#2D3436]',
+    color: 'bg-[var(--super-orange)]',
+    rotate: 'rotate-0',
   },
   {
     name: 'Enterprise',
@@ -55,7 +57,8 @@ const plans = [
     ],
     cta: '별도 상담 요청',
     popular: false,
-    style: 'bg-white border-[#E9E4DB]/60',
+    color: 'bg-[#FFF9C4]',
+    rotate: 'rotate-1',
   },
 ];
 
@@ -63,52 +66,55 @@ export default function Pricing() {
   const ref = useReveal();
 
   return (
-    <section id="pricing" ref={ref} className="py-28 md:py-36 px-6 lg:px-12 xl:px-20 bg-white relative">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <span className="reveal text-[11px] uppercase tracking-[0.3em] text-[#8C9A8B] font-medium block mb-5">
-            Pricing
+    <section id="pricing" ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-[#F4EBE1] relative overflow-hidden">
+      {/* Background pattern */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 8px)'}} />
+
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-16">
+          <span className="inline-block px-4 py-1.5 bg-white border-2 border-[var(--super-text)] text-[var(--super-text)] text-xs font-bold rounded-full shadow-[2px_2px_0px_0px_var(--super-text)] mb-6">
+            Pricing Plans
           </span>
-          <h2 className="reveal font-serif text-3xl md:text-5xl text-[#2D3436] leading-tight mb-6">
+          <h2 className="reveal font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-4">
             학원 규모에 맞는<br />
-            <span className="italic font-light">합리적인 요금제</span>
+            <span className="text-[var(--super-orange)]">합리적인 요금제</span>
           </h2>
-          <p className="reveal text-[#636E72] font-light text-lg max-w-lg mx-auto">
+          <p className="reveal text-[var(--warm-gray)] font-medium text-lg max-w-lg mx-auto">
             원생 수 무제한. 추가 비용 없이 모든 기능을 이용하세요.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`reveal rounded-3xl border p-8 md:p-10 flex flex-col relative ${plan.style} transition-all duration-500 hover:shadow-xl`}
+              className={`reveal ${plan.color} rounded-2xl border-[3px] border-[var(--super-text)] p-8 md:p-10 flex flex-col relative shadow-[6px_6px_0px_0px_var(--super-text)] hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_var(--super-text)] transition-all duration-300 ${plan.rotate}`}
               style={{ transitionDelay: `${i * 0.12}s` }}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#C4A265] text-white text-[11px] uppercase tracking-wider font-medium px-4 py-1 rounded-full">
+                <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--super-text)] text-white text-xs font-bold px-5 py-1.5 rounded-full border-2 border-[var(--super-text)] shadow-[2px_2px_0px_0px_var(--super-brown)] transform -rotate-2">
                   Most Popular
                 </span>
               )}
 
               <div className="mb-8">
-                <span className={`text-xs uppercase tracking-wider font-medium ${plan.popular ? 'text-[#C4A265]' : 'text-[#8C9A8B]'}`}>
+                <span className={`text-xs font-bold ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
                   {plan.name}
                 </span>
-                <h3 className={`text-lg font-semibold mt-1 mb-2 ${plan.popular ? 'text-white' : 'text-[#2D3436]'}`}>
+                <h3 className={`text-2xl font-black font-serif mt-1 mb-2 ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
                   {plan.label}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className={`text-4xl font-serif font-semibold ${plan.popular ? 'text-white' : 'text-[#2D3436]'}`}>
+                  <span className={`text-4xl font-serif font-black ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
                     {plan.price}
                   </span>
                   {plan.period && (
-                    <span className={`text-sm ${plan.popular ? 'text-[#B2BEC3]' : 'text-[#636E72]'}`}>
+                    <span className={`text-sm font-bold ${plan.popular ? 'text-white/70' : 'text-[var(--super-text)]/50'}`}>
                       원 / {plan.period}
                     </span>
                   )}
                 </div>
-                <p className={`text-sm mt-2 ${plan.popular ? 'text-[#B2BEC3]' : 'text-[#636E72]'}`}>
+                <p className={`text-sm mt-2 font-medium ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
                   {plan.desc}
                 </p>
               </div>
@@ -116,20 +122,18 @@ export default function Pricing() {
               <ul className="space-y-3 mb-10 flex-1">
                 {plan.features.map((f, j) => (
                   <li key={j} className="flex items-start gap-3">
-                    <svg className={`w-4 h-4 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-[#8C9A8B]' : 'text-[#8C9A8B]'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                    </svg>
-                    <span className={`text-sm ${plan.popular ? 'text-[#DFE6E9]' : 'text-[#636E72]'}`}>{f}</span>
+                    <span className={`text-sm mt-0.5 ${plan.popular ? 'text-white' : 'text-[var(--super-orange)]'}`}>✓</span>
+                    <span className={`text-sm font-medium ${plan.popular ? 'text-white/90' : 'text-[var(--super-text)]/80'}`}>{f}</span>
                   </li>
                 ))}
               </ul>
 
               <button
-                className={`w-full py-4 rounded-full font-medium text-sm transition-all ${
+                className={`w-full py-4 rounded-full font-bold text-sm transition-all border-2 ${
                   plan.popular
-                    ? 'bg-white text-[#2D3436] hover:bg-[#F8F7F4]'
-                    : 'bg-[#8C9A8B] text-white hover:bg-[#7a887a]'
-                }`}
+                    ? 'bg-white text-[var(--super-text)] border-white hover:bg-[var(--cream)] shadow-[3px_3px_0px_0px_rgba(255,255,255,0.3)]'
+                    : 'bg-[var(--super-text)] text-white border-[var(--super-text)] hover:bg-[var(--super-orange)] hover:border-[var(--super-orange)] shadow-[3px_3px_0px_0px_var(--super-brown)]'
+                } hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]`}
               >
                 {plan.cta}
               </button>
