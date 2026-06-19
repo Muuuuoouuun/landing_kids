@@ -1,108 +1,114 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax, CountUp } from './motion';
 
 const benefits = [
   {
     num: '01',
-    title: '데이터 기반 맞춤 커리큘럼',
-    desc: '아이별 학습 데이터를 바탕으로 수준별 맞춤 커리큘럼을 자동 생성. 선생님의 수업 준비 시간을 획기적으로 줄여드립니다.',
+    icon: '✨',
+    tag: '차별화',
+    title: '"그 학원은 다르더라"',
+    desc: '프리미엄 에듀테크 수업과 학부모 리포트는 옆 학원이 못 따라오는 무기입니다. 등록 상담에서 보여주는 것만으로 차이가 납니다.',
+    color: 'bg-[var(--gold-light)]',
   },
   {
     num: '02',
-    title: '학부모 리포트 자동화',
-    desc: '상담 전 학부모에게 자동 발송되는 전문적인 리포트. 상담 시간은 줄이고, 신뢰도는 높입니다.',
+    icon: '📈',
+    tag: '재원율',
+    title: '나가던 아이가 남습니다',
+    desc: '아이는 "또 가고 싶다", 부모는 매주 성장을 눈으로 확인. 만족이 쌓이면 퇴원이 줄고, 입소문으로 신규가 들어옵니다.',
+    color: 'bg-white',
   },
   {
     num: '03',
-    title: '브랜드 차별화',
-    desc: '"그 학원은 다르더라"는 학부모들의 입소문. 프리미엄 에듀테크 도입은 학원의 브랜드 가치를 높입니다.',
+    icon: '⚙️',
+    tag: '운영 편의',
+    title: '선생님 일이 줄어듭니다',
+    desc: '수업 준비·채점·학부모 리포트가 자동화. 상담 자료가 알아서 만들어지니, 선생님은 아이에게 더 집중할 수 있습니다.',
+    color: 'bg-[var(--super-blue)]',
   },
 ];
 
+const stats = [
+  { value: 93, suffix: '%', label: '재원 유지율' },
+  { value: 150, suffix: '+', label: '도입 학원' },
+  { value: 4, suffix: '시간', label: '주당 절감 업무' },
+];
+
 export default function ForAcademy() {
-  const ref = useReveal();
-
   return (
-    <section id="for-academy" ref={ref} className="py-28 md:py-36 px-6 lg:px-12 xl:px-20 bg-white relative overflow-hidden">
-      {/* Accent shape */}
-      <div className="absolute top-0 right-0 w-[45%] h-[50%] bg-[#F8F7F4] rounded-bl-[160px] -z-0" />
-
+    <section
+      id="for-academy"
+      className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 relative border-b-4 border-[var(--super-text)] overflow-hidden bg-[#FDFBF7]"
+    >
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col md:flex-row gap-16 items-center">
-          {/* Left — dashboard preview */}
-          <div className="reveal-left md:w-1/2 w-full">
-            <div className="bg-[#F8F7F4] rounded-3xl border border-[#E9E4DB] p-8 md:p-10">
-              {/* Mock dashboard */}
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-3 h-3 rounded-full bg-[#E9E4DB]" />
-                <div className="w-3 h-3 rounded-full bg-[#E9E4DB]" />
-                <div className="w-3 h-3 rounded-full bg-[#E9E4DB]" />
-                <div className="flex-1 h-6 bg-[#E9E4DB]/60 rounded-full ml-4" />
-              </div>
-              <div className="space-y-4">
-                <div className="flex gap-4">
-                  <div className="flex-1 h-32 bg-white rounded-2xl border border-[#E9E4DB]/60 p-4">
-                    <div className="w-8 h-2 bg-[#8C9A8B]/30 rounded mb-3" />
-                    <div className="w-16 h-6 bg-[#8C9A8B]/20 rounded mb-2" />
-                    <div className="w-full h-12 bg-gradient-to-r from-[#8C9A8B]/10 to-[#8C9A8B]/5 rounded-lg" />
-                  </div>
-                  <div className="flex-1 h-32 bg-white rounded-2xl border border-[#E9E4DB]/60 p-4">
-                    <div className="w-8 h-2 bg-[#C4A265]/30 rounded mb-3" />
-                    <div className="w-16 h-6 bg-[#C4A265]/20 rounded mb-2" />
-                    <div className="flex gap-1 mt-2">
-                      {[60, 80, 45, 90, 70].map((h, i) => (
-                        <div key={i} className="flex-1 bg-[#C4A265]/15 rounded-sm" style={{ height: `${h * 0.4}px` }} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="h-24 bg-white rounded-2xl border border-[#E9E4DB]/60 p-4 flex items-center gap-6">
-                  {[1, 2, 3].map((n) => (
-                    <div key={n} className="flex items-center gap-2 flex-1">
-                      <div className="w-8 h-8 rounded-full bg-[#F2F0EC]" />
-                      <div className="flex-1">
-                        <div className="w-16 h-2 bg-[#E9E4DB] rounded mb-1.5" />
-                        <div className="w-full h-1.5 bg-[#F2F0EC] rounded-full">
-                          <div className="h-full bg-[#8C9A8B]/40 rounded-full" style={{ width: `${n * 30}%` }} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right — content */}
-          <div className="reveal-right md:w-1/2">
-            <span className="inline-block text-[11px] uppercase tracking-[0.3em] text-[#C4A265] font-medium bg-[#C4A265]/10 px-4 py-1.5 rounded-full mb-5">
-              For Academy Directors
+        {/* Header */}
+        <div className="text-center mb-16">
+          <FadeIn direction="down">
+            <span className="inline-block px-4 py-2 bg-[var(--super-text)] text-white border-4 border-[var(--super-text)] text-sm font-bold shadow-[4px_4px_0px_0px_var(--super-orange)] mb-8 transform -rotate-2">
+              For Academy Owners
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-[#2D3436] leading-tight mb-6">
-              원장님의 교육 철학을<br />
-              <span className="italic font-light">디지털로 완성하는 솔루션</span>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-[1.1] font-black mb-5">
+              원장님께 남는 건,<br />
+              <span className="text-[var(--super-orange)]">결국 숫자입니다.</span>
             </h2>
-            <p className="text-[#636E72] font-light leading-relaxed mb-10 text-[15px]">
-              단순한 학습 콘텐츠를 넘어, 학원의 커리큘럼을 더 가치 있게 만듭니다.
-              선생님의 효율적인 수업 운영과 학부모의 깊은 신뢰를 동시에 잡으세요.
+          </FadeIn>
+          <FadeIn delay={0.25}>
+            <p className="text-[var(--super-text)]/80 font-bold text-lg max-w-2xl mx-auto">
+              학부모가 먼저 찾는 학원을 만듭니다. 차별화로 끌어오고, 재원율로 지키고, 운영 편의로 남깁니다.
             </p>
-
-            <div className="space-y-8">
-              {benefits.map((b, i) => (
-                <div key={i} className="flex gap-5">
-                  <span className="text-2xl font-serif font-light text-[#E9E4DB] flex-shrink-0 mt-0.5">{b.num}</span>
-                  <div>
-                    <h3 className="text-lg font-semibold text-[#2D3436] mb-1.5">{b.title}</h3>
-                    <p className="text-[#636E72] text-[15px] leading-relaxed">{b.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </FadeIn>
         </div>
+
+        {/* Stats strip */}
+        <FadeIn delay={0.3}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                className={`bg-white border-4 border-[var(--super-text)] p-8 text-center shadow-[8px_8px_0px_0px_var(--super-text)] ${i % 2 === 0 ? 'rotate-1' : '-rotate-1'}`}
+              >
+                <CountUp
+                  target={s.value}
+                  suffix={s.suffix}
+                  className="font-serif text-5xl md:text-6xl font-black text-[var(--super-orange)] block"
+                />
+                <p className="font-black text-[var(--super-text)] mt-2">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
+
+        {/* Benefit cards */}
+        <StaggerContainer className="grid grid-cols-1 lg:grid-cols-3 gap-8" stagger={0.15}>
+          {benefits.map((b) => (
+            <StaggerItem key={b.num}>
+              <div
+                className={`${b.color} border-4 border-[var(--super-text)] p-8 h-full shadow-[8px_8px_0px_0px_var(--super-text)] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_var(--super-text)] transition-transform duration-300`}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-16 h-16 bg-white border-4 border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] flex items-center justify-center text-3xl transform -rotate-6">
+                    {b.icon}
+                  </div>
+                  <span className="font-serif text-4xl font-black text-[var(--super-text)]/20">{b.num}</span>
+                </div>
+                <div className="inline-block px-2 py-1 bg-[var(--super-text)] text-white text-xs font-bold mb-3 uppercase tracking-wider">
+                  {b.tag}
+                </div>
+                <h3 className="text-2xl font-black font-serif text-[var(--super-text)] mb-3 leading-tight">{b.title}</h3>
+                <p className="text-[var(--super-text)]/80 font-bold leading-relaxed">{b.desc}</p>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
       </div>
+
+      <Parallax speed={0.3} className="absolute top-20 right-[3%] z-0 opacity-10 pointer-events-none">
+        <div className="w-32 h-32 border-4 border-[var(--super-text)] rounded-full" />
+      </Parallax>
     </section>
   );
 }

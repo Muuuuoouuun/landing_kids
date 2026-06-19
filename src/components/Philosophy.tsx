@@ -1,84 +1,91 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import Image from 'next/image';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax } from './motion';
 
 const pillars = [
   {
-    icon: (
-      <svg className="w-16 h-16 text-[var(--super-brown)] mb-6 mx-auto group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-      </svg>
-    ),
-    label: '#Brain #Development',
-    title: '두뇌 발달 기반 설계',
-    desc: '4~7세 인지 발달 단계에 맞춘 즐거운 자극. 아이마다 다른 성장 속도에 맞춰 난이도를 자동 조절합니다.',
-    color: 'bg-[var(--super-blue)]'
+    icon: '🎉',
+    label: '더 즐거운 수업',
+    title: '아이가 "또 하고 싶다!" 외치는 콘텐츠',
+    desc: '프리미엄 애니메이션과 인터랙티브 게임으로 설계된 수업. 아이들이 스스로 빠져드는 몰입형 학습 경험을 만듭니다.',
+    color: 'bg-white'
   },
   {
-    icon: (
-      <svg className="w-16 h-16 text-[var(--super-brown)] mb-6 mx-auto group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.546l-1.59-1.59" />
-      </svg>
-    ),
-    label: '#Active #Inquiry',
-    title: '능동적 탐구 학습',
-    desc: '답을 주입하지 않습니다. 스스로 묻고 발견하는 과정으로 원장님의 교육 철학을 고스란히 담아냅니다.',
+    icon: '⚡',
+    label: '더 활기찬 수업',
+    title: '교실 에너지가 완전히 달라진다',
+    desc: '터치, 퀴즈, 미션, 보상 시스템이 만들어내는 역동적인 교실. 아이들 눈이 반짝이고 선생님도 수업이 즐거워집니다.',
     color: 'bg-[var(--super-pink)]'
   },
   {
-    icon: (
-      <svg className="w-16 h-16 text-[var(--super-brown)] mb-6 mx-auto group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
-      </svg>
-    ),
-    label: '#Data #Report',
-    title: '학부모 리포트 자동화',
-    desc: '아이별 학습 패턴 분석을 통한 전문 리포트 자동 생성. 상담은 쉬워지고 학부모 신뢰도는 높아집니다.',
-    color: 'bg-[#FFF9C4]'
+    icon: '📊',
+    label: '철저한 관리',
+    title: '아이별 성장을 데이터로 완벽 추적',
+    desc: '학습 패턴, 강약점, 성취도를 실시간 분석. 자동 생성되는 전문 리포트로 학부모 상담까지 완벽하게 관리합니다.',
+    color: 'bg-[var(--gold-light)]'
   },
 ];
 
 export default function Philosophy() {
-  const ref = useReveal();
-
   return (
-    <section id="philosophy" ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-[var(--cream)] relative overflow-hidden text-center">
-      
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="mb-16">
-           <span className="inline-block px-3 py-1 bg-white border-2 border-[var(--super-text)] text-xs font-bold rounded shadow-[2px_2px_0px_0px_var(--super-text)] mb-6 transform rotate-2">
-             Our Philosophy
-           </span>
-          <h2 className="reveal font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-6">
-            단순한 학습 앱이 아닌<br />
-            학원 경쟁력을 높이는 <span className="text-[var(--super-orange)]">교육 시스템</span>
-          </h2>
-          <p className="reveal text-[var(--warm-gray)] font-medium text-lg max-w-2xl mx-auto">
-            뇌과학 기반 커리큘럼, 능동적 학습 설계, 자동화된 학부모 리포트까지.<br className="hidden md:block"/>원장님의 교육 철학을 더 강력하게 만드는 세 가지 축입니다.
-          </p>
+    <section id="philosophy" className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 relative border-b-4 border-[var(--super-text)] overflow-hidden">
+
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/philosophy-bg.png" alt="" fill className="object-cover opacity-25" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row gap-16">
+
+        {/* Left column: Sticky Header */}
+        <div className="md:w-1/3 md:sticky md:top-32 h-fit">
+          <FadeIn direction="down" delay={0.1}>
+            <div className="inline-block px-4 py-2 bg-[var(--super-brown)] text-white border-2 border-[var(--super-text)] font-bold text-sm shadow-[4px_4px_0px_0px_var(--super-text)] mb-8 transform -rotate-2">
+              Our Philosophy
+            </div>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <h2 className="font-serif text-5xl md:text-6xl text-[var(--super-text)] leading-[1.1] font-black mb-6">
+              즐겁고, 활기차고,<br />
+              <span className="text-[var(--super-orange)]">철저하게.</span>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.35}>
+            <p className="text-[var(--super-text)] font-bold text-lg leading-relaxed">
+              재미있으니 아이가 몰입하고, 활기차니 교실이 살아나고, 데이터로 관리하니 학부모가 신뢰합니다.
+            </p>
+          </FadeIn>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        {/* Right column: Staggered Cards */}
+        <StaggerContainer className="md:w-2/3 flex flex-col gap-8" stagger={0.18}>
           {pillars.map((p, i) => (
-            <div
-              key={i}
-              className={`reveal group p-8 md:p-10 ${p.color} border-[3px] border-[var(--super-text)] rounded-[2rem] shadow-[6px_6px_0px_0px_var(--super-text)] hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_var(--super-text)] transition-all duration-300 relative`}
-              style={{ transitionDelay: `${i * 0.1}s` }}
-            >
-              {/* Fun decorative tape */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 rotate-[-4deg] opacity-70" style={{boxShadow: '0 1px 3px rgba(0,0,0,0.1)'}}></div>
-              
-              {p.icon}
-              <div className="text-sm font-bold text-[var(--super-text)] mb-3 opacity-60">
-                {p.label}
+            <StaggerItem key={i} direction="right">
+              <div
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-6 p-8 md:p-10 ${p.color} border-4 border-[var(--super-text)] shadow-[8px_8px_0px_0px_var(--super-text)] transition-transform hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_var(--super-text)] duration-300`}
+              >
+                <div className="w-20 h-20 shrink-0 bg-white border-4 border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] flex items-center justify-center text-4xl transform -rotate-6 hover:rotate-0 transition-transform duration-300">
+                  {p.icon}
+                </div>
+
+                <div>
+                  <div className="inline-block px-2 py-1 bg-white border-2 border-[var(--super-text)] text-xs font-bold mb-3 uppercase tracking-wider">
+                    {p.label}
+                  </div>
+                  <h3 className="text-2xl font-black font-serif text-[var(--super-text)] mb-3 leading-none">{p.title}</h3>
+                  <p className="text-[var(--super-text)]/80 leading-relaxed font-bold">{p.desc}</p>
+                </div>
               </div>
-              <h3 className="text-2xl font-bold font-serif text-[var(--super-text)] mb-4">{p.title}</h3>
-              <p className="text-[var(--super-text)]/80 leading-relaxed font-medium">{p.desc}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
+
+      <Parallax speed={0.3} className="absolute top-20 right-[3%] z-0 opacity-10 pointer-events-none">
+        <div className="w-32 h-32 border-4 border-[var(--super-text)] rounded-full" />
+      </Parallax>
     </section>
   );
 }

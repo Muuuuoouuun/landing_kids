@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import Image from 'next/image';
+import { FadeIn, StaggerContainer, StaggerItem } from './motion';
 
 const plans = [
   {
@@ -63,83 +64,90 @@ const plans = [
 ];
 
 export default function Pricing() {
-  const ref = useReveal();
-
   return (
-    <section id="pricing" ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-[#F4EBE1] relative overflow-hidden">
-      {/* Background pattern */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 8px)'}} />
+    <section id="pricing" className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 relative overflow-hidden">
+
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/pricing-bg.png" alt="" fill className="object-cover opacity-20" />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-white border-2 border-[var(--super-text)] text-[var(--super-text)] text-xs font-bold rounded-full shadow-[2px_2px_0px_0px_var(--super-text)] mb-6">
-            Pricing Plans
-          </span>
-          <h2 className="reveal font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-4">
-            학원 규모에 맞는<br />
-            <span className="text-[var(--super-orange)]">합리적인 요금제</span>
-          </h2>
-          <p className="reveal text-[var(--warm-gray)] font-medium text-lg max-w-lg mx-auto">
-            원생 수 무제한. 추가 비용 없이 모든 기능을 이용하세요.
-          </p>
+          <FadeIn direction="down">
+            <span className="inline-block px-4 py-1.5 bg-white border-2 border-[var(--super-text)] text-[var(--super-text)] text-xs font-bold rounded-full shadow-[2px_2px_0px_0px_var(--super-text)] mb-6">
+              Pricing Plans
+            </span>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-4">
+              학원 규모에 맞는<br />
+              <span className="text-[var(--super-orange)]">합리적인 요금제</span>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.2}>
+            <p className="text-[var(--warm-gray)] font-medium text-lg max-w-lg mx-auto">
+              원생 수 무제한. 추가 비용 없이 모든 기능을 이용하세요.
+            </p>
+          </FadeIn>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <StaggerContainer className="grid md:grid-cols-3 gap-8" stagger={0.12}>
           {plans.map((plan, i) => (
-            <div
-              key={i}
-              className={`reveal ${plan.color} rounded-2xl border-[3px] border-[var(--super-text)] p-8 md:p-10 flex flex-col relative shadow-[6px_6px_0px_0px_var(--super-text)] hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_var(--super-text)] transition-all duration-300 ${plan.rotate}`}
-              style={{ transitionDelay: `${i * 0.12}s` }}
-            >
-              {plan.popular && (
-                <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--super-text)] text-white text-xs font-bold px-5 py-1.5 rounded-full border-2 border-[var(--super-text)] shadow-[2px_2px_0px_0px_var(--super-brown)] transform -rotate-2">
-                  Most Popular
-                </span>
-              )}
-
-              <div className="mb-8">
-                <span className={`text-xs font-bold ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
-                  {plan.name}
-                </span>
-                <h3 className={`text-2xl font-black font-serif mt-1 mb-2 ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
-                  {plan.label}
-                </h3>
-                <div className="flex items-baseline gap-1">
-                  <span className={`text-4xl font-serif font-black ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
-                    {plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className={`text-sm font-bold ${plan.popular ? 'text-white/70' : 'text-[var(--super-text)]/50'}`}>
-                      원 / {plan.period}
-                    </span>
-                  )}
-                </div>
-                <p className={`text-sm mt-2 font-medium ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
-                  {plan.desc}
-                </p>
-              </div>
-
-              <ul className="space-y-3 mb-10 flex-1">
-                {plan.features.map((f, j) => (
-                  <li key={j} className="flex items-start gap-3">
-                    <span className={`text-sm mt-0.5 ${plan.popular ? 'text-white' : 'text-[var(--super-orange)]'}`}>✓</span>
-                    <span className={`text-sm font-medium ${plan.popular ? 'text-white/90' : 'text-[var(--super-text)]/80'}`}>{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                className={`w-full py-4 rounded-full font-bold text-sm transition-all border-2 ${
-                  plan.popular
-                    ? 'bg-white text-[var(--super-text)] border-white hover:bg-[var(--cream)] shadow-[3px_3px_0px_0px_rgba(255,255,255,0.3)]'
-                    : 'bg-[var(--super-text)] text-white border-[var(--super-text)] hover:bg-[var(--super-orange)] hover:border-[var(--super-orange)] shadow-[3px_3px_0px_0px_var(--super-brown)]'
-                } hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]`}
+            <StaggerItem key={i}>
+              <div
+                className={`${plan.color} rounded-2xl border-[3px] border-[var(--super-text)] p-8 md:p-10 flex flex-col relative shadow-[6px_6px_0px_0px_var(--super-text)] hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_var(--super-text)] transition-all duration-300 ${plan.rotate}`}
               >
-                {plan.cta}
-              </button>
-            </div>
+                {plan.popular && (
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[var(--super-text)] text-white text-xs font-bold px-5 py-1.5 rounded-full border-2 border-[var(--super-text)] shadow-[2px_2px_0px_0px_var(--super-brown)] transform -rotate-2">
+                    Most Popular
+                  </span>
+                )}
+
+                <div className="mb-8">
+                  <span className={`text-xs font-bold ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
+                    {plan.name}
+                  </span>
+                  <h3 className={`text-2xl font-black font-serif mt-1 mb-2 ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
+                    {plan.label}
+                  </h3>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-4xl font-serif font-black ${plan.popular ? 'text-white' : 'text-[var(--super-text)]'}`}>
+                      {plan.price}
+                    </span>
+                    {plan.period && (
+                      <span className={`text-sm font-bold ${plan.popular ? 'text-white/70' : 'text-[var(--super-text)]/50'}`}>
+                        원 / {plan.period}
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-sm mt-2 font-medium ${plan.popular ? 'text-white/80' : 'text-[var(--super-text)]/60'}`}>
+                    {plan.desc}
+                  </p>
+                </div>
+
+                <ul className="space-y-3 mb-10 flex-1">
+                  {plan.features.map((f, j) => (
+                    <li key={j} className="flex items-start gap-3">
+                      <span className={`text-sm mt-0.5 ${plan.popular ? 'text-white' : 'text-[var(--super-orange)]'}`}>✓</span>
+                      <span className={`text-sm font-medium ${plan.popular ? 'text-white/90' : 'text-[var(--super-text)]/80'}`}>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  className={`w-full py-4 rounded-full font-bold text-sm transition-all border-2 ${
+                    plan.popular
+                      ? 'bg-white text-[var(--super-text)] border-white hover:bg-[var(--cream)] shadow-[3px_3px_0px_0px_rgba(255,255,255,0.3)]'
+                      : 'bg-[var(--super-text)] text-white border-[var(--super-text)] hover:bg-[var(--super-orange)] hover:border-[var(--super-orange)] shadow-[3px_3px_0px_0px_var(--super-brown)]'
+                  } hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]`}
+                >
+                  {plan.cta}
+                </button>
+              </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
       </div>
     </section>
   );

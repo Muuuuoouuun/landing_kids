@@ -5,7 +5,17 @@
       "Bash(node:*)",
       "Bash(cd:*)",
       "Bash(npx next:*)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4011)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:4011)",
+      "Bash(netstat -ano)",
+      "WebFetch(domain:www.superr.ai)",
+      "Bash(find '/c/Users/aaaha/OneDrive/바탕 화면/Projects/Landing_s/landing_kids' -not -path */node_modules/* -not -path */.next/* -maxdepth 3 -type d)",
+      "Bash(npm install:*)",
+      "Bash(curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyB8onjnv7zvEhy1_9GyOskeXeBZqNGAOGo\" -H \"Content-Type: application/json\" -d '{:*)",
+      "Bash(curl -s \"https://generativelanguage.googleapis.com/v1beta/models?key=AIzaSyB8onjnv7zvEhy1_9GyOskeXeBZqNGAOGo\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m[''''name''''], ''''|'''', '''',''''.join\\(m.get\\(''''supportedGenerationMethods'''',[]\\)\\)\\) for m in data.get\\(''''models'''',[]\\) if ''''image'''' in m[''''name''''].lower\\(\\) or ''''imagen'''' in m[''''name''''].lower\\(\\) or ''''flash'''' in m[''''name''''].lower\\(\\)]\")",
+      "Bash(curl -s https://generativelanguage.googleapis.com/v1beta/models?key=AIzaSyB8onjnv7zvEhy1_9GyOskeXeBZqNGAOGo)",
+      "Bash(curl -s -X POST \"https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-fast-generate-001:predict?key=AIzaSyB8onjnv7zvEhy1_9GyOskeXeBZqNGAOGo\" -H \"Content-Type: application/json\" -d '{:*)",
+      "Bash(npm run:*)"
     ]
   }
 }

@@ -1,95 +1,107 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import Image from 'next/image';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax } from './motion';
 
 const steps = [
   {
     time: 'STEP 1',
-    title: '무료 원격 상담 & 분석',
-    desc: '전담 매니저가 학원 환경을 분석하여 최적의 도입 방안 설계',
+    title: '맞춤 상담 & 세팅',
+    desc: '학원 환경 분석 후 즐거운 수업 콘텐츠를 맞춤 구성합니다',
     color: 'bg-[var(--super-blue)]',
-    rotate: '-rotate-2',
     icon: '💬'
   },
   {
     time: 'STEP 2',
-    title: '맞춤형 커리큘럼 세팅',
-    desc: '원장님의 교육 방향에 맞춘 맞춤형 콘텐츠 구성 및 강사 교육 진행',
+    title: '활기찬 수업 시작!',
+    desc: '아이들이 환호하는 인터랙티브 수업이 교실에 펼쳐집니다',
     color: 'bg-[#FFF9C4]',
-    rotate: 'rotate-1',
-    icon: '🛠️'
+    icon: '🎉'
   },
   {
     time: 'STEP 3',
-    title: '수업 적용 및 데이터 축적',
-    desc: '아이별 학습 데이터 자동 수집 및 주차별 맞춤 피드백 생성',
+    title: '실시간 학습 관리',
+    desc: '아이별 데이터가 자동 축적, 선생님이 즉시 확인·피드백',
     color: 'bg-[var(--super-pink)]',
-    rotate: '-rotate-1',
     icon: '📊'
   },
   {
     time: 'STEP 4',
-    title: '입소문이 나는 학원!',
-    desc: '월간 성장 리포트로 학부모 만족도 상승 및 원생 유입 증가',
-    color: 'bg-[var(--cream)]',
-    rotate: 'rotate-2',
-    icon: '✨'
+    title: '학부모 감동 리포트',
+    desc: '성장 데이터 리포트 자동 발송 → 입소문 → 원생 증가!',
+    color: 'bg-white',
+    icon: '🚀'
   },
 ];
 
 export default function HowItWorks() {
-  const ref = useReveal();
-
   return (
-    <section id="how-it-works" ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-[#F4EBE1] relative overflow-hidden">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
-        
+    <section id="how-it-works" className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-[var(--super-orange)] relative overflow-hidden border-b-4 border-[var(--super-text)]">
+
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/howitworks-bg.png" alt="" fill className="object-cover opacity-15 mix-blend-multiply" />
+      </div>
+
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 relative z-10">
+
         {/* Left: Text & Header */}
-        <div className="lg:w-1/3 text-center lg:text-left">
-          <span className="inline-block px-4 py-2 bg-[var(--super-brown)] text-white text-xs font-bold rounded shadow-[2px_2px_0px_0px_rgba(0,0,0,0.8)] mb-6 transform -rotate-2">
-            Easy Onboarding
-          </span>
-          <h2 className="reveal font-serif text-4xl md:text-5xl text-[var(--super-text)] leading-tight font-black mb-6">
-            도입부터<br />
-            입소문까지<br />
-            <span className="text-[var(--super-orange)]">4주 완성</span>
-          </h2>
-          <p className="reveal text-[var(--warm-gray)] font-medium text-lg mb-8">
-            전담 매니저와 함께하는 체계적인 온보딩.<br />원장님은 오직 <span className="font-bold text-[var(--super-text)]">교육에만 집중</span>하세요.
-          </p>
-          
-          <div className="hidden lg:block relative w-48 h-48 mx-auto xl:mx-0 opacity-80 mt-12">
-             <div className="absolute inset-0 bg-[#E5D4C4] rounded-full filter blur-xl"></div>
-             {/* Abstract shape representing onboarding */}
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[var(--super-orange)] rounded-full border-4 border-[var(--super-text)] animate-pulse-soft"></div>
-             <div className="absolute top-10 right-10 w-16 h-16 bg-[#FFF9C4] rounded-full border-2 border-[var(--super-text)]"></div>
-             <div className="absolute bottom-10 left-10 w-12 h-12 bg-[var(--super-pink)] rounded-full border-2 border-[var(--super-text)]"></div>
-          </div>
+        <div className="lg:w-2/5 md:sticky md:top-32 h-fit">
+          <FadeIn direction="down">
+            <span className="inline-block px-4 py-2 bg-white text-[var(--super-text)] text-sm font-bold border-2 border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] mb-8 transform -rotate-3">
+              Easy Onboarding
+            </span>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <h2 className="font-serif text-5xl md:text-6xl text-[var(--super-text)] leading-tight font-black mb-6">
+              4주 만에<br />
+              교실 분위기가<br />
+              <span className="text-white underline decoration-[var(--super-text)] decoration-4 underline-offset-8">완전히 바뀝니다</span>
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <p className="text-[var(--super-text)] font-semibold text-lg mb-12 border-l-4 border-white pl-6">
+              즐거운 수업 세팅부터 철저한 관리 시스템 구축까지.<br />
+              전담 매니저가 모든 과정을 함께합니다.
+            </p>
+          </FadeIn>
+
+          <FadeIn delay={0.4}>
+            <button className="bg-[var(--super-text)] text-white px-8 py-4 font-bold border-4 border-transparent hover:bg-white hover:text-[var(--super-text)] hover:border-[var(--super-text)] transition-colors shadow-[6px_6px_0px_0px_rgba(255,255,255,0.4)] hover:shadow-none hover:translate-y-1">
+               상세 도입 과정 보기 &rarr;
+            </button>
+          </FadeIn>
         </div>
 
-        {/* Right: Funky timeline cards */}
-        <div className="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-6 relative">
-             {/* Connective dots background */}
-             <div className="absolute inset-0 z-0 hidden sm:block pointer-events-none opacity-20" style={{backgroundImage: 'radial-gradient(#2D231A 2px, transparent 2px)', backgroundSize: '30px 30px'}}></div>
-             
-             {steps.map((step, i) => (
-                <div 
-                  key={i}
-                  className={`reveal relative p-6 rounded-2xl border-[3px] border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] ${step.color} ${step.rotate} z-10 hover:-translate-y-2 hover:shadow-[8px_8px_0px_0px_var(--super-text)] transition-all`}
-                  style={{ transitionDelay: `${i * 0.1}s` }}
-                >
-                  <div className="text-3xl mb-4">{step.icon}</div>
-                  <div className="font-bold font-serif text-[var(--super-text)] text-sm mb-1 opacity-70 border-b-2 border-[var(--super-text)]/20 pb-1 inline-block">
+        {/* Right: Staggered Cards */}
+        <StaggerContainer className="lg:w-3/5 flex flex-col gap-6" stagger={0.12}>
+          {steps.map((step, i) => (
+            <StaggerItem key={i} direction="left">
+              <div
+                className={`flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 md:p-8 rounded-2xl border-4 border-[var(--super-text)] shadow-[8px_8px_0px_0px_var(--super-brown)] ${step.color} transition-transform hover:-translate-x-2 duration-300`}
+              >
+                <div className="w-16 h-16 shrink-0 bg-white border-4 border-[var(--super-text)] rounded-full flex items-center justify-center text-3xl shadow-[4px_4px_0px_0px_var(--super-text)]">
+                  {step.icon}
+                </div>
+
+                <div className="flex-1">
+                  <div className="font-black font-serif text-[var(--super-text)] text-sm mb-2 opacity-60">
                     {step.time}
                   </div>
-                  <h3 className="text-xl font-bold text-[var(--super-text)] mt-3 mb-2">{step.title}</h3>
-                  <p className="text-[var(--super-text)]/80 font-medium leading-relaxed">{step.desc}</p>
+                  <h3 className="text-2xl font-black text-[var(--super-text)] mb-2 leading-tight">{step.title}</h3>
+                  <p className="text-[var(--super-text)]/80 font-bold leading-relaxed">{step.desc}</p>
                 </div>
-             ))}
-        </div>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
 
       </div>
+
+      <Parallax speed={-0.3} className="absolute -bottom-8 -left-8 z-0 opacity-10 pointer-events-none">
+        <div className="w-40 h-40 border-8 border-white rounded-full" />
+      </Parallax>
     </section>
   );
 }

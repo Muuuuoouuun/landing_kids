@@ -1,107 +1,96 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import Image from 'next/image';
+import { FadeIn, StaggerContainer, StaggerItem, Parallax } from './motion';
 
 const features = [
-  { 
-    title: '프리미엄 2D/3D 애니메이션', 
-    desc: '전문 애니메이터가 제작한 고퀄리티 영상으로 몰입도 극대화',
+  {
+    title: '신나는 애니메이션 수업',
+    desc: '캐릭터와 모험하며 배우는 스토리텔링. 아이들이 "다음 편 언제 나와요?" 물어봅니다.',
     bgColor: 'bg-[#B4E4D3]',
-    illustration: (
-      <div className="w-full h-32 flex items-center justify-center">
-        <div className="w-16 h-16 bg-[#FF5A1F] rounded-2xl transform rotate-12 flex items-center justify-center shadow-md">
-           <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-             <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-             <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-           </svg>
-        </div>
-      </div>
-    )
+    icon: '🎬'
   },
-  { 
-    title: '인터랙티브 터치 학습', 
-    desc: '직접 만지고 움직이며 원리를 체험하는 능동적 참여',
+  {
+    title: '몸으로 배우는 터치 학습',
+    desc: '터치하고, 드래그하고, 완성하는 참여형 수업. 교실에 웃음소리와 환호가 끊이지 않습니다.',
     bgColor: 'bg-[#FFD1DC]',
-    illustration: (
-      <div className="w-full h-32 flex items-center justify-center">
-        <div className="w-16 h-16 bg-[#9E7453] rounded-full transform -rotate-12 flex items-center justify-center shadow-md">
-          <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.546l-1.59-1.59" />
-          </svg>
-        </div>
-      </div>
-    )
+    icon: '🙌'
   },
-  { 
-    title: '학원 커스터마이징', 
-    desc: '원장님 학원만의 특별한 브랜드 콘텐츠 프레임 제공',
+  {
+    title: '실시간 학습 관리 대시보드',
+    desc: '아이별 진도, 정답률, 집중 시간까지. 선생님이 한눈에 파악하고 즉시 피드백할 수 있습니다.',
     bgColor: 'bg-[#CDE4F7]',
-    illustration: (
-      <div className="w-full h-32 flex items-center justify-center">
-        <div className="w-16 h-16 bg-[#E5A344] rounded-lg transform rotate-6 flex items-center justify-center shadow-md">
-          <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.83-5.83M15.17 11.42L21 5.58A2.652 2.652 0 0017.25 1.83l-5.83 5.83m-3.75 3.75l-5.83 5.83A2.652 2.652 0 005.58 21l5.83-5.83m-3.75-3.75l-5.83-5.83A2.652 2.652 0 005.58 1.83l5.83 5.83" />
-          </svg>
-        </div>
-      </div>
-    )
+    icon: '📊'
   },
 ];
 
 export default function ContentShowcase() {
-  const ref = useReveal();
-
   return (
-    <section ref={ref} className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 bg-white relative overflow-hidden">
-      
-      <div className="max-w-6xl mx-auto relative z-10 w-full flex flex-col items-center">
-        
-        {/* Playful Header */}
+    <section className="py-24 md:py-32 px-6 lg:px-12 xl:px-20 relative overflow-hidden border-b-4 border-[var(--super-text)]">
+
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/showcase-bg.png" alt="" fill className="object-cover opacity-20" />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10 w-full flex flex-col items-center">
+
+        {/* Header */}
         <div className="text-center mb-16 relative">
-             <span className="inline-block px-4 py-2 bg-[var(--super-orange)] text-white text-sm font-bold rounded-full shadow-lg transform -rotate-3 mb-6 relative z-10">
-               Premium Content!
-               <div className="absolute -bottom-2 right-4 w-3 h-3 bg-[var(--super-orange)] transform rotate-45"></div>
-             </span>
-          <h2 className="reveal font-serif text-4xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-tight font-black mb-4">
-            아이들이 스스로<br />
-            <span className="text-[var(--super-orange)]">&ldquo;또 하고 싶어요!&rdquo;</span><br />
-            하는 콘텐츠
-          </h2>
-          <p className="reveal text-[var(--warm-gray)] font-medium text-lg">
-            지루한 학습지 대신, 직접 참여하는 즐거움.
-          </p>
+          <FadeIn direction="down">
+            <span className="inline-block px-4 py-2 bg-[var(--super-orange)] text-white text-sm font-bold border-2 border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] transform -rotate-3 mb-6 relative z-10">
+              Premium Content!
+            </span>
+          </FadeIn>
+          <FadeIn delay={0.15}>
+            <h2 className="font-serif text-5xl md:text-6xl text-[var(--super-text)] leading-tight font-black mb-4">
+              수업 시간이<br />
+              <span className="text-white bg-[var(--super-brown)] px-4 pb-1 inline-block transform rotate-1 border-4 border-[var(--super-text)] shadow-[6px_6px_0px_0px_var(--super-text)] mt-2">
+                놀이 시간처럼!
+              </span><br />
+              그런데 성장은 확실하게.
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.3}>
+            <p className="text-[var(--super-text)] font-semibold text-xl mt-8">
+              즐거운 콘텐츠 + 실시간 관리 = 완벽한 수업
+            </p>
+          </FadeIn>
         </div>
 
-        {/* 3-Panel Comic Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+        {/* Staggered Feature Cards */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full" stagger={0.15}>
           {features.map((f, i) => (
-            <div 
-              key={i} 
-              className="reveal flex flex-col items-center w-full"
-              style={{ transitionDelay: `${i * 0.15}s` }}
-            >
-              {/* Illustration Block */}
-              <div className={`w-full ${f.bgColor} rounded-xl border-[3px] border-[var(--super-text)] shadow-[4px_4px_0px_0px_var(--super-text)] mb-6 overflow-hidden relative group cursor-pointer hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_var(--super-text)] transition-all`}>
-                  {/* Decorative dashed line inside */}
-                  <div className="absolute inset-2 border-2 border-dashed border-[var(--super-text)]/20 rounded-lg pointer-events-none"></div>
-                  {f.illustration}
+            <StaggerItem key={i}>
+              <div
+                className="flex flex-col w-full bg-white border-4 border-[var(--super-text)] shadow-[8px_8px_0px_0px_var(--super-text)] transition-all hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_var(--super-text)] duration-300"
+              >
+                {/* Top Colored Block */}
+                <div className={`w-full h-48 ${f.bgColor} border-b-4 border-[var(--super-text)] flex items-center justify-center p-6 relative overflow-hidden`}>
+                  <div className="absolute inset-0 opacity-20 pointer-events-none" style={{backgroundImage: 'radial-gradient(#2D231A 2px, transparent 2px)', backgroundSize: '16px 16px'}} />
+                  <div className="w-20 h-20 bg-white border-4 border-[var(--super-text)] rounded-2xl flex items-center justify-center shadow-[4px_4px_0px_0px_var(--super-text)] text-4xl transform rotate-6 hover:rotate-0 hover:scale-110 transition-transform cursor-pointer relative z-10">
+                    {f.icon}
+                  </div>
+                </div>
+
+                {/* Bottom Text Block */}
+                <div className="p-8">
+                  <h3 className="font-serif font-black text-2xl text-[var(--super-text)] mb-3 leading-tight">
+                    {f.title}
+                  </h3>
+                  <p className="text-[var(--super-text)]/80 font-bold leading-relaxed">{f.desc}</p>
+                </div>
               </div>
-              
-              {/* Text Block */}
-              <div className="text-center px-2">
-                <h3 className="font-serif font-bold text-xl text-[var(--super-text)] mb-2 inline-block relative">
-                   {f.title}
-                   {/* highlight stroke */}
-                   <span className="absolute bottom-1 left-0 w-full h-2 bg-[var(--gold-light)]/40 -z-10 transform -rotate-1"></span>
-                </h3>
-                <p className="text-[var(--warm-gray)] font-medium leading-relaxed mt-2">{f.desc}</p>
-              </div>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerContainer>
 
       </div>
+
+      <Parallax speed={0.4} className="absolute top-16 right-[4%] z-0 opacity-10 pointer-events-none">
+        <div className="w-24 h-24 bg-[var(--super-pink)] border-4 border-[var(--super-text)] rounded-xl rotate-12" />
+      </Parallax>
     </section>
   );
 }

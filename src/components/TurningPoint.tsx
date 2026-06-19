@@ -1,44 +1,59 @@
 'use client';
 
 import React from 'react';
-import { useReveal } from '../hooks/useReveal';
+import Image from 'next/image';
+import { FadeIn, ScaleIn, Parallax } from './motion';
 
 export default function TurningPoint() {
-  const ref = useReveal();
-
   return (
-    <section ref={ref} className="py-24 md:py-32 px-6 lg:px-12 bg-[#F4EBE1] relative overflow-hidden flex flex-col items-center">
-      {/* Decorative SVG elements hanging from top */}
-      <div className="absolute top-0 inset-x-0 w-full flex justify-around opacity-30 pointer-events-none">
-         <svg width="20" height="100" viewBox="0 0 20 100"><line x1="10" y1="0" x2="10" y2="80" stroke="#9E7453" strokeWidth="2" strokeDasharray="4 4" /><circle cx="10" cy="90" r="6" fill="#FF5A1F"/></svg>
-         <svg width="20" height="150" viewBox="0 0 20 150"><line x1="10" y1="0" x2="10" y2="130" stroke="#9E7453" strokeWidth="2" strokeDasharray="4 4" /><circle cx="10" cy="140" r="8" fill="#FFC0CB"/></svg>
-         <svg width="20" height="120" viewBox="0 0 20 120"><line x1="10" y1="0" x2="10" y2="100" stroke="#9E7453" strokeWidth="2" strokeDasharray="4 4" /><circle cx="10" cy="110" r="6" fill="#A8B5A7"/></svg>
+    <section className="py-24 md:py-32 px-6 lg:px-12 relative border-b-4 border-[var(--super-text)] flex flex-col items-center overflow-hidden">
+
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image src="/images/bg/solution-bg.png" alt="" fill className="object-cover opacity-30" />
       </div>
 
-      <div className="max-w-4xl mx-auto text-center relative z-10 pt-10">
-        <h2 className="reveal font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[var(--super-text)] leading-[1.2] mb-8 font-black">
-          만약 학부모가<br />
-          <span className="text-[var(--super-orange)] underline decoration-wavy decoration-[#FFC0CB] underline-offset-8 bg-white/50 px-2 rounded">
-            &lsquo;우리 아이 성장 데이터&rsquo;
-          </span>를<br />
-          직접 확인할 수 있다면?
-        </h2>
+      <div className="max-w-4xl mx-auto text-center relative z-10">
 
-        <div className="reveal flex justify-center mb-10">
-          <svg className="w-16 h-16 text-[var(--super-brown)] animate-bounce" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-            <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
+        <FadeIn direction="down" delay={0.1}>
+          <div className="inline-block px-4 py-2 bg-white border-2 border-[var(--super-text)] text-[var(--super-text)] font-bold text-sm shadow-[4px_4px_0px_0px_var(--super-text)] mb-10 transform rotate-2">
+            The Solution
+          </div>
+        </FadeIn>
 
-        <div className="reveal relative bg-white border-[3px] border-[var(--super-text)] p-8 md:p-12 rounded-[2rem] shadow-[8px_8px_0px_0px_var(--super-brown)] transform rotate-1 hover:rotate-0 transition-transform duration-300">
-           <p className="text-xl md:text-2xl text-[var(--super-text)] font-semibold leading-relaxed">
-            말로 하는 상담이 아닌 <span className="bg-[#FFF9C4] px-2 py-1 rounded">데이터로 보여주는 성과</span>로.<br className="hidden md:block"/>
-            학부모의 불안이 아닌 <span className="text-[var(--super-orange)] font-bold">깊은 신뢰</span>로.<br className="hidden md:block"/>
-            그 놀라운 전환.
-          </p>
-        </div>
+        <FadeIn delay={0.2}>
+          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[var(--super-text)] leading-[1.1] mb-12 font-black">
+            만약 수업 시간에<br />
+            <span className="inline-block bg-[var(--super-orange)] text-white px-4 py-1 mt-2 shadow-[6px_6px_0px_0px_var(--super-text)] border-4 border-[var(--super-text)] transform -rotate-1">
+              아이들이 환호하고
+            </span><br />
+            그 성과가 데이터로 증명된다면?
+          </h2>
+        </FadeIn>
+
+        <ScaleIn delay={0.35}>
+          <div className="relative bg-white border-4 border-[var(--super-text)] p-8 md:p-12 shadow-[12px_12px_0px_0px_var(--super-text)] transition-transform duration-300 hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_var(--super-text)]">
+
+             {/* Decorative Pin */}
+             <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[var(--super-pink)] border-4 border-[var(--super-text)] shadow-[2px_2px_0px_0px_var(--super-text)] z-20"></div>
+
+             <p className="text-xl md:text-3xl text-[var(--super-text)] font-bold leading-relaxed font-serif">
+              지루한 수업이 아닌 <span className="text-[var(--super-orange)] underline decoration-4 underline-offset-4">아이가 먼저 달려오는 수업</span>으로.<br className="hidden md:block"/>
+              감에 의존하는 관리가 아닌 <span className="bg-[#FFF9C4] px-2 py-1 border-2 border-[var(--super-text)]">데이터 기반 철저한 교육 관리</span>로.<br className="hidden md:block"/>
+              학원이 완전히 달라집니다.
+            </p>
+          </div>
+        </ScaleIn>
 
       </div>
+
+      {/* Parallax decorations */}
+      <Parallax speed={0.3} className="absolute top-20 left-[5%] z-0 opacity-15 pointer-events-none">
+        <div className="w-20 h-20 bg-[var(--super-pink)] border-4 border-[var(--super-text)] rounded-xl rotate-12" />
+      </Parallax>
+      <Parallax speed={-0.4} className="absolute bottom-20 right-[8%] z-0 opacity-15 pointer-events-none">
+        <div className="w-16 h-16 bg-[var(--gold-light)] border-4 border-[var(--super-text)] rounded-full" />
+      </Parallax>
     </section>
   );
 }
