@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "next dev -p 4011",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "showreel": "node showreel/render.mjs",
+    "showreel:font": "node showreel/build-font.mjs",
+    "showreel:sheet": "node showreel/render.mjs --sheet 30"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,7 @@
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
+    "galmuri": "^2.40.3",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3"

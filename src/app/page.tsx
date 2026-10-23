@@ -3,6 +3,7 @@
 import { ScrollProgress } from '../components/motion';
 import Navigation from '../components/Navigation';
 import Hero from '../components/Hero';
+import Showreel from '../components/Showreel';
 import PainPoint from '../components/PainPoint';
 import TurningPoint from '../components/TurningPoint';
 import OurBelief from '../components/OurBelief';
@@ -34,6 +35,7 @@ export default function LandingPage() {
       <main className="bg-[#FDFBF7]">
         {/* ACT 1: 공감 — "지루한 수업, 가라앉는 교실, 부족한 관리" */}
         <Hero />
+        <Showreel />
         <PainPoint />
         <TurningPoint />
 
