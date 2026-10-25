@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FadeIn, ScaleIn } from './motion';
 
 const points = [
-  { icon: '🔤', label: '알파벳 · 수학 · 과학', color: 'bg-[var(--super-pink)]' },
-  { icon: '🏠', label: '온라인 · 오프라인 어디서나', color: 'bg-[var(--super-blue)]' },
+  { icon: '👆', label: '터치 · 드래그 · 발표로 직접 참여', color: 'bg-[var(--super-pink)]' },
+  { icon: '📡', label: '온라인 라이브도 교실처럼 생생하게', color: 'bg-[var(--super-blue)]' },
   { icon: '🧒', label: '5세부터 초등까지 맞춤', color: 'bg-[#FFF9C4]' },
 ];
 
@@ -88,8 +88,8 @@ export default function Showreel() {
           </FadeIn>
           <FadeIn delay={0.3}>
             <p className="text-white/80 font-bold text-lg md:text-xl max-w-2xl mx-auto">
-              알파벳 블록을 박치기하고, 수식으로 다리를 놓고, 실험으로 새싹을 키웁니다.{' '}<br className="hidden md:block" />
-              집에서도 학원에서도 똑같이 신나는 수업을 22초로 만나보세요.
+              알파벳 블록을 터치하고, 수식 다리를 끌어 맞추고, 실험으로 새싹을 키웁니다.{' '}<br className="hidden md:block" />
+              온라인 라이브 수업에서도 함께 쓰는 칠판·손들기·응답기·트로피로 교실처럼 신나게.
             </p>
           </FadeIn>
         </div>
@@ -121,7 +121,7 @@ export default function Showreel() {
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
                 onClick={togglePlay}
-                aria-label="리틀마인즈 22초 쇼릴: 알파벳, 수학, 과학을 놀면서 배우는 픽셀 모험 수업"
+                aria-label="리틀마인즈 22초 쇼릴: 알파벳·수학·과학 인터랙티브 수업과 온라인 라이브 수업"
               >
                 <source src="/showreel/little-minds-showreel.mp4" type="video/mp4" />
                 <source src="/showreel/little-minds-showreel.webm" type="video/webm" />

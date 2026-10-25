@@ -400,28 +400,3 @@ export function cat(g, x, y, f, o = {}) {
   }
   g.rect(hx - 0.5, hy + 1, 2, 1, C.pinkH);
 }
-
-// 미니 집 아이콘 (지도). x,y = 바닥 중앙
-export function houseIcon(g, x, y, roof = C.orange, s = 1) {
-  const w = 18 * s;
-  const h = 12 * s;
-  g.rect(x - w / 2 + 2, y - h + 2, w, h, C.ink);
-  g.box(x - w / 2, y - h, w, h, C.cream, C.ink);
-  g.tri(x - w / 2 - 3, y - h + 1, x + w / 2 + 3, y - h + 1, x, y - h - 10 * s, C.ink);
-  g.tri(x - w / 2 - 1, y - h, x + w / 2 + 1, y - h, x, y - h - 8 * s, roof);
-  g.box(x - 2 * s, y - 7 * s, 5 * s, 7 * s, C.brown, C.ink);
-  g.box(x + 4 * s, y - 9 * s, 4 * s, 4 * s, C.sky, C.ink);
-}
-
-// 미니 학원 건물 아이콘. x,y = 바닥 중앙
-export function academyIcon(g, x, y, s = 1, sign = C.orange) {
-  const w = 26 * s;
-  const h = 20 * s;
-  g.rect(x - w / 2 + 2, y - h + 2, w, h, C.ink);
-  g.box(x - w / 2, y - h, w, h, C.brownL, C.ink);
-  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) g.box(x - w / 2 + 3 + c * 7 * s, y - h + 8 * s + r * 6 * s, 5 * s, 4 * s, C.sky, C.ink);
-  g.box(x - w / 2 - 2, y - h - 6 * s, w + 4, 7 * s, sign, C.ink);
-  g.rect(x - w / 2 + 2, y - h - 4 * s, w - 4, 1, C.white);
-  g.rect(x + w / 2 - 6, y - h - 16 * s, 1, 10 * s, C.ink);
-  g.rect(x + w / 2 - 5, y - h - 16 * s, 6 * s, 4 * s, C.yellow);
-}

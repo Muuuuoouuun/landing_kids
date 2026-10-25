@@ -153,6 +153,14 @@ export class Gfx {
     y = Math.round(y);
     w = Math.round(w);
     h = Math.round(h);
+    if (fill == null) {
+      // 테두리만
+      this.rect(x, y, w, t, line);
+      this.rect(x, y + h - t, w, t, line);
+      this.rect(x, y + t, t, h - 2 * t, line);
+      this.rect(x + w - t, y + t, t, h - 2 * t, line);
+      return;
+    }
     if (r > 0) {
       this.rbox(x, y, w, h, line, r);
       if (fill != null) this.rbox(x + t, y + t, w - 2 * t, h - 2 * t, fill, Math.max(0, r - t));

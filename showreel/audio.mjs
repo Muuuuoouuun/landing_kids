@@ -316,6 +316,19 @@ function sfx(m, name, t, arg = 0) {
       m.voice(t, 0.3, 0, v({ wave: 'noise', vol: 0.09, a: 0.001, d: 0.3, s: 0, noiseRate: 7000, pan: (t * 7) % 1.2 - 0.6 }));
       for (let i = 0; i < 5; i++) m.voice(t + 0.08 + i * 0.045, 0.012, 0, v({ wave: 'noise', vol: 0.05, d: 0.012, s: 0, noiseRate: 24000, pan: 0.5 - i * 0.25 }));
       break;
+    case 'join':
+      m.voice(t, 0.04, mtof(79 + arg * 2), v({ duty: 0.125, vol: 0.06, d: 0.04, s: 0.4, pan: 0.4 }));
+      m.voice(t + 0.05, 0.09, mtof(86 + arg * 2), v({ duty: 0.125, vol: 0.06, d: 0.09, s: 0.2, r: 0.05, pan: 0.4 }));
+      break;
+    case 'raise':
+      m.voice(t, 0.06, sweep(500, 1300, 0.06), v({ wave: 'sine', vol: 0.12, d: 0.06, s: 0.4 }));
+      m.voice(t + 0.06, 0.4, mtof(93), v({ wave: 'sine', vol: 0.09, a: 0.001, d: 0.4, s: 0, r: 0.1 }));
+      m.voice(t + 0.06, 0.25, mtof(93) * 2.76, v({ wave: 'sine', vol: 0.02, a: 0.001, d: 0.25, s: 0 }));
+      break;
+    case 'trophy':
+      [72, 76, 79, 84, 88, 91].forEach((nn, i) => m.voice(t + i * 0.04, i === 5 ? 0.5 : 0.04, mtof(nn), v({ duty: 0.25, vol: 0.07, d: 0.3, s: 0.5, r: 0.15, vib: i === 5 ? 0.01 : 0 })));
+      for (let i = 0; i < 6; i++) m.voice(t + 0.25 + i * 0.05, 0.03, mtof(100 + (i % 3) * 3), v({ wave: 'tri', vol: 0.04, d: 0.03, s: 0, pan: (i % 2 ? 0.5 : -0.5) }));
+      break;
     default:
       break;
   }

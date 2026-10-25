@@ -624,3 +624,76 @@ export function typeText(g, str, x, y, t, o = {}) {
   const n = Math.floor(t / per);
   return g.text(str, x, y, { ...rest, each: (i) => (i >= n ? { hide: true } : null) });
 }
+
+// 만화식 터짐 말풍선 ("TAP!", "쏙!"). t = 터진 뒤 프레임
+export function pow(g, t, x, y, str, o = {}) {
+  const { dur = 24, bg = C.yellow, fg = C.ink, scale = 1, n = 9, rot = 0.3 } = o;
+  if (t < 0 || t > dur) return;
+  const s = eBack(clamp(t / 7)) * (1 - clamp((t - dur + 5) / 5));
+  if (s <= 0.05) return;
+  const cap = g.cap('b11') * scale;
+  const rx = (g.measure(str, { scale }) / 2 + 9) * s;
+  const ry = (cap / 2 + 9) * s;
+  const fan = (grow, c) => {
+    for (let i = 0; i < n * 2; i++) {
+      const a0 = rot + (i / (n * 2)) * Math.PI * 2;
+      const a1 = rot + ((i + 1) / (n * 2)) * Math.PI * 2;
+      const r0 = i % 2 ? 0.7 : 1.08;
+      const r1 = (i + 1) % 2 ? 0.7 : 1.08;
+      g.tri(x, y, x + Math.cos(a0) * (rx * r0 + grow), y + Math.sin(a0) * (ry * r0 + grow), x + Math.cos(a1) * (rx * r1 + grow), y + Math.sin(a1) * (ry * r1 + grow), c);
+    }
+  };
+  fan(3, C.ink);
+  fan(0, bg);
+  if (s > 0.7) g.text(str, x + 1, y - cap / 2, { scale, color: fg, outline: fg === C.white ? C.ink : C.white, ow: 1, align: 'center' });
+}
+
+// 마우스 커서 (색 = 사용자). x,y = 화살 끝
+export const CURSOR = [
+  'k.......',
+  'kk......',
+  'kwk.....',
+  'kwwk....',
+  'kwwwk...',
+  'kwwwwk..',
+  'kwwwwwk.',
+  'kwwwwwwk',
+  'kwwwkkkk',
+  'kwwk....',
+  'kwk.....',
+  'kk......',
+];
+export function cursor(g, x, y, color, name = '', press = false) {
+  g.sprite(CURSOR, x, y + (press ? 1 : 0), { pal: { w: color } });
+  if (name) {
+    const w = g.measure(name, { font: 'r9' }) + 6;
+    g.box(x + 8, y + 11, w, 12, color, C.ink);
+    g.text(name, x + 11, y + 13, { font: 'r9', color: C.white });
+  }
+}
+
+// 트로피. cx = 중앙, y = 위
+export function trophy(g, cx, y, s = 1) {
+  const w = 14 * s;
+  const h = 12 * s;
+  for (const sx of [-1, 1]) g.ring(cx + sx * w * 0.62, y + h * 0.35, 3 * s, C.ink, Math.max(2, 2 * s));
+  for (const sx of [-1, 1]) g.ring(cx + sx * w * 0.62, y + h * 0.35, 3 * s - 0.5, C.yellowD, Math.max(1, s));
+  g.ellipse(cx, y + h * 0.35, w / 2 + 1, h * 0.75 + 1, C.ink);
+  g.ellipse(cx, y + h * 0.35, w / 2, h * 0.75, C.yellow);
+  g.rect(cx - w / 2 - 1, y - 1, w + 2, h * 0.35 + 1, C.ink);
+  g.rect(cx - w / 2, y, w, h * 0.35, C.yellow);
+  g.rect(cx - w / 2 + 1, y + 1, w - 2, Math.max(1, s), C.lemon);
+  g.rect(cx - w * 0.3, y + h * 0.15, Math.max(1, s), h * 0.6, C.lemon);
+  g.box(cx - 2 * s, y + h * 0.95, 4 * s, 4 * s, C.yellowD, C.ink);
+  g.box(cx - 6 * s, y + h * 0.95 + 4 * s, 12 * s, 4 * s, C.brown, C.ink);
+  starIcon(g, cx + 0.5, y + h * 0.42, 2.2 * s, { c: C.white });
+}
+
+// 손바닥 (손들기)
+export function palm(g, cx, y, s = 1, c = C.skin) {
+  const fw = 3 * s;
+  for (let i = 0; i < 4; i++) g.box(cx - 7 * s + i * (fw + 0.5 * s), y + (i === 0 || i === 3 ? 2 * s : 0), fw + 1, 8 * s, c, C.ink, 1, 1);
+  g.box(cx - 7 * s, y + 6 * s, 14 * s, 9 * s, c, C.ink, 1, Math.round(2 * s));
+  g.box(cx + 5 * s, y + 7 * s, 4 * s, 6 * s, c, C.ink, 1, 1);
+  g.rect(cx - 6 * s, y + 7 * s, 12 * s - 1, 6 * s, c);
+}
