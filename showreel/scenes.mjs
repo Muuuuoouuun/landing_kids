@@ -1,4 +1,4 @@
-// 리틀마인즈 쇼릴 — 22초 · 60fps · 120BPM (1박 = 30프레임, 1마디 = 120프레임)
+// 클래스인(ClassIn) 쇼릴 — 22초 · 60fps · 120BPM (1박 = 30프레임, 1마디 = 120프레임)
 //
 //  0.0s  BOOT      CRT가 켜지고 학용품들이 궤도로 날아들며 로고 등장
 //  2.0s  LIVE      실시간 온라인 수업 (14초, 한 화면에서 이어짐)
@@ -30,7 +30,7 @@ const BLACK = rgb('#0B0814');
 // ─────────────────────────────────────────────
 // 하단 자막
 function caption(g, t, str, t0, t1 = 999, o = {}) {
-  const { bg = C.ink, fg = C.white, y = 240, x = 240 } = o;
+  const { bg = C.themeDD, fg = C.white, y = 240, x = 240 } = o;
   if (t < t0 || t > t1 + 10) return;
   const pin = eBack(prog(t, t0, t0 + 12));
   const pout = eIn(prog(t, t1, t1 + 10));
@@ -48,18 +48,20 @@ function shake(g, t, t0, dur = 8, amp = 3) {
 // ─────────────────────────────────────────────
 // 로고
 // ─────────────────────────────────────────────
-const LOGO = 'LITTLE MINDS';
+const LOGO = 'ClassIn';
+const LOGO_S = 6;
 function logo(g, cx, y, s, each = null) {
   const base = { scale: s, sp: 1, align: 'center' };
   const shape = each ? (i, ch) => { const a = each(i, ch); return a ? { ...a, color: undefined } : a; } : null;
-  for (let d = s * 2; d >= 1; d -= 1) {
-    g.text(LOGO, cx, y + d, { ...base, each: shape, color: d > s ? C.ink : C.orangeD, outline: C.ink, ow: s - 1 });
+  const depth = Math.round(s * 1.5);
+  for (let d = depth; d >= 1; d -= 1) {
+    g.text(LOGO, cx, y + d, { ...base, each: shape, color: d > depth / 2 ? C.ink : C.themeDD, outline: C.ink, ow: s - 1 });
   }
-  g.text(LOGO, cx, y, { ...base, each, color: C.yellow, fill2: C.orange, outline: C.ink, ow: s - 1 });
+  g.text(LOGO, cx, y, { ...base, each, color: C.white, fill2: C.theme, outline: C.ink, ow: s - 1 });
 }
 function logoCharX(g, s, idx) {
   const total = g.measure(LOGO, { scale: s, sp: 1 });
-  const pre = g.measure(LOGO.slice(0, idx), { scale: s, sp: 1 }) + (idx > 0 ? s : 0);
+  const pre = g.measure(LOGO.slice(0, idx), { scale: s, sp: 1 }) + (idx > 0 ? s / g.s : 0);
   const cw = g.measure(LOGO[idx], { scale: s });
   return 240 - total / 2 + pre + cw / 2;
 }
@@ -83,8 +85,8 @@ const BOOT_TOOLS = [
 ];
 
 function sBoot(g, t) {
-  gradient(g, 0, 0, W, H, C.night, C.night2, 5);
-  starfield(g, t, { n: 90 });
+  gradient(g, 0, 0, W, H, C.themeL, C.theme, 5);
+  starfield(g, t, { n: 90, cols: [C.yellow, C.pinkH, C.white], dim: C.themeM });
 
   // 학용품 궤도
   const n = BOOT_TOOLS.length;
@@ -106,26 +108,26 @@ function sBoot(g, t) {
   const dip = t >= landT && t < landT + 8 ? Math.round(3 * Math.sin(((t - landT) / 8) * Math.PI)) : 0;
   let k = 0;
   const order = [...LOGO].map((ch) => (ch === ' ' ? -1 : k++));
-  logo(g, 240, ly + dip, 4, (i) => {
+  logo(g, 240, ly + dip, LOGO_S, (i) => {
     const j = order[i];
     if (j < 0) return null;
-    const s = 22 + j * 3;
+    const s = 22 + j * 4;
     const p = (t - s) / 16;
     if (p < 0) return { hide: true };
     const flash = t >= 64 + j * 1.5 && t < 68 + j * 1.5;
     return { dy: -(1 - eBounce(clamp(p))) * 120, color: flash ? C.white : undefined };
   });
   // 착지 먼지
-  for (let j = 0; j < 11; j++) {
-    const tt = t - (22 + j * 3 + 6);
+  for (let j = 0; j < k; j++) {
+    const tt = t - (22 + j * 4 + 6);
     if (tt < 0 || tt > 10) continue;
     const idx = [...LOGO].findIndex((_, i) => order[i] === j);
-    const cx = logoCharX(g, 4, idx);
-    for (const s of [-1, 1]) g.rect(cx + s * (10 + tt * 1.5), ly + 50 - tt * 0.3, 2, 2, C.gray);
+    const cx = logoCharX(g, LOGO_S, idx);
+    for (const s of [-1, 1]) g.rect(cx + s * (10 + tt * 1.5), ly + g.cap('b11') * LOGO_S - 2 - tt * 0.3, 2, 2, C.white);
   }
 
-  // 마스코트가 아래에서 점프해 로고 위 'M'에 착지
-  const mx = Math.round(logoCharX(g, 4, 7));
+  // 마스코트가 아래에서 점프해 로고 위 'I'에 착지
+  const mx = Math.round(logoCharX(g, LOGO_S, 5));
   const jp = prog(t, 66, landT);
   if (t >= 66) {
     let y;
@@ -152,10 +154,10 @@ function sBoot(g, t) {
   // 서브 카피
   if (t >= 86) {
     const p = eBack(prog(t, 86, 98));
-    chip(g, '실시간으로 함께하는 놀이 수업!', 240, Math.round(lerp(176, 140, p)), { scale: 2, bg: C.orange, pad: 10, padY: 5, sh: 4 });
+    chip(g, '실시간으로 함께하는 놀이 수업!', 240, Math.round(lerp(176, 142, p)), { scale: 2, bg: C.themeD, tol: C.ink, pad: 10, padY: 5, sh: 4 });
   }
   if (t >= 96) {
-    typeText(g, '알파벳 · 수학 · 과학이 놀이처럼 쏙쏙', 240, 184, t - 96, { per: 1, color: C.gold, outline: C.ink, ow: 1, align: 'center' });
+    typeText(g, '알파벳 · 수학 · 과학이 놀이처럼 쏙쏙', 240, 182, t - 96, { per: 1, color: C.themeDD, outline: C.white, ow: 1, align: 'center' });
   }
 
   // CRT 전원 켜짐
@@ -170,7 +172,7 @@ function sBoot(g, t) {
     if (t < 2) g.rect(239, 134, 2, 2, C.white);
   }
   // 아이리스 아웃 (마스코트 얼굴로)
-  if (t >= 102) iris(g, mx, ly - 16, 560 * (1 - eIn(prog(t, 102, 119))), C.ink);
+  if (t >= 102) iris(g, mx, ly - 16, 560 * (1 - eIn(prog(t, 102, 119))), C.themeDD);
 }
 
 // ─────────────────────────────────────────────
@@ -308,7 +310,7 @@ function videoTile(g, rect, s, t, o = {}) {
     g.text('ABC', x + 23, y + 13, { font: 'r9', color: C.white, align: 'center' });
     g.rect(x, y + h - 10, w, 10, C.gold);
     const ax = x + w / 2 + 14;
-    adult(g, ax, y + h / 2 + 46 + bob, { hair: C.hair, top: C.orange, style: 'teacher', point: speak ? 0.5 + 0.5 * Math.sin(t * 0.3) : 0.2, f: t });
+    adult(g, ax, y + h / 2 + 46 + bob, { hair: C.hair, top: C.themeD, style: 'teacher', point: speak ? 0.5 + 0.5 * Math.sin(t * 0.3) : 0.2, f: t });
     const hy = y + h / 2 + 2 + bob;
     g.oval(ax, hy, 9, 9, C.ink, { from: Math.PI * 1.05, to: Math.PI * 1.95, t: 2 });
     g.box(ax - 10, hy - 2, 3, 5, C.ink2, C.ink);
@@ -495,7 +497,7 @@ function stamp(g, cx, cy, t) {
 // ── 활동 A: 타이머 + 객관식
 function actQuiz(g, t) {
   if (t < 8 || t >= 120) return;
-  boardTab(g, t, '타이머 퀴즈', C.orange, 8);
+  boardTab(g, t, '타이머 퀴즈', C.theme, 8, C.ink);
   typeText(g, 'Q. 사과는 모두 몇 개일까요?', BX + 12, BY + 30, t - 12, { per: 1, color: C.white });
   for (let i = 0; i < 7; i++) {
     const p = eBack(prog(t, 16 + i * 2, 24 + i * 2));
@@ -511,7 +513,7 @@ function actQuiz(g, t) {
   if (t < QUIZ_REVEAL + 4) {
     g.circle(tx, ty, 21, C.ink);
     g.circle(tx, ty, 20, C.ink2);
-    pie(g, tx, ty, 19, frac, frac < 0.4 ? C.red : C.orange);
+    pie(g, tx, ty, 19, frac, frac < 0.4 ? C.red : C.themeM);
     g.circle(tx, ty, 12, C.ink);
     g.circle(tx, ty, 11, C.white);
     const beat = t >= QUIZ_T0 && (t - QUIZ_T0) % QUIZ_STEP < 3;
@@ -879,7 +881,7 @@ function actSpeak(g, t) {
 }
 
 // ── 정리
-const RECAP = [['타이머', C.orange], ['객관식 퀴즈', C.blue], ['개인 칠판', C.green], ['랜덤 선택', C.purple], ['트로피', C.yellowD], ['가상 실험', C.pinkH], ['AI 스피킹', C.red]];
+const RECAP = [['타이머', C.themeD], ['객관식 퀴즈', C.blue], ['개인 칠판', C.green], ['랜덤 선택', C.purple], ['트로피', C.yellowD], ['가상 실험', C.pinkH], ['AI 스피킹', C.red]];
 function actRecap(g, t) {
   if (t < 724) return;
   const tt = t - 724;
@@ -888,7 +890,7 @@ function actRecap(g, t) {
     const p = eBack(prog(tt, 14, 26));
     g.save();
     g.translate(0, Math.round((1 - p) * 20));
-    chip(g, '교실처럼 생생하게!', BCX, BY + 46, { bg: C.orange, scale: 2, sh: 4, pad: 8, padY: 4 });
+    chip(g, '교실처럼 생생하게!', BCX, BY + 46, { bg: C.theme, fg: C.ink, scale: 2, sh: 4, pad: 8, padY: 4 });
     g.restore();
   }
   RECAP.forEach(([lab, col], i) => {
@@ -901,20 +903,21 @@ function actRecap(g, t) {
     const ws = RECAP.slice(row === 0 ? 0 : 4, row === 0 ? 4 : 7).map(([l]) => g.measure(l) + 12);
     const total = ws.reduce((a, b) => a + b, 0) + (n - 1) * 6;
     const x = BCX - total / 2 + ws.slice(0, k).reduce((a, b) => a + b + 6, 0);
-    chip(g, lab, x, BY + 92 + row * 24 + Math.round((1 - p) * 10), { bg: col, align: 'left', sh: 2, pad: 6, padY: 3 });
+    chip(g, lab, x, BY + 92 + row * 24 + Math.round((1 - p) * 10), { bg: col, tol: C.ink, align: 'left', sh: 2, pad: 6, padY: 3 });
   });
   if (tt >= 76) typeText(g, '집에서도 학원에서도, 실시간으로 함께', BCX, BY + 148, tt - 76, { per: 1, color: C.yellow, outline: C.ink, ow: 1, align: 'center' });
 }
 
 function sLive(g, t) {
   // 앱 배경 + 상단 바
-  g.rect(0, 0, W, H, C.night);
-  for (let y = 22; y < H; y += 8) for (let x = (y / 8) % 2 ? 4 : 0; x < W; x += 8) g.pset(x, y, C.night2);
-  g.rect(0, 0, W, 20, C.ink);
+  g.rect(0, 0, W, H, C.themeL);
+  for (let y = 22; y < H; y += 8) for (let x = (y / 8) % 2 ? 4 : 0; x < W; x += 8) g.pset(x, y, C.theme);
+  g.rect(0, 0, W, 20, C.themeDD);
+  g.rect(0, 20, W, 1, C.ink);
   g.box(4, 3, 40, 14, C.red, C.ink);
   if (Math.floor(t / 20) % 2 === 0) g.circle(11, 10, 2.5, C.white);
   g.text('LIVE', 16, 5, { color: C.white });
-  g.text('리틀마인즈 라이브 · 7세 놀이반', 52, 5, { color: C.white });
+  g.text('ClassIn 라이브 · 7세 놀이반', 52, 5, { color: C.white });
   const sec = 754 + Math.floor(t / 60);
   g.text(`${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`, 474, 5, { color: C.gold, align: 'right' });
   for (let i = 0; i < 4; i++) g.rect(370 + i * 3, 14 - i * 2 - 2, 2, i * 2 + 3, C.green);
@@ -922,8 +925,8 @@ function sLive(g, t) {
 
   // 칠판 (가상 실험 땐 설계도 모눈)
   g.box(BX, BY, BW, BH, CHALK, C.ink, 1);
-  g.box(BX + 1, BY + 1, BW - 2, BH - 2, null, C.brown, 4);
-  g.box(BX + 4, BY + 4, BW - 8, BH - 8, CHALK, C.brownD, 1);
+  g.box(BX + 1, BY + 1, BW - 2, BH - 2, null, C.themeM, 4);
+  g.box(BX + 4, BY + 4, BW - 8, BH - 8, CHALK, C.themeDD, 1);
   for (let i = 0; i < 18; i++) g.pset(BX + 10 + rnd(i, 101) * (BW - 20), BY + 10 + rnd(i, 102) * (BH - 20), CHALK2);
   const lab = clamp(Math.min(prog(t, 360, 368), 1 - prog(t, 478, 486)));
   if (lab > 0) {
@@ -1007,8 +1010,9 @@ function sLive(g, t) {
   caption(g, t, '듣고 → 따라 읽고 → AI가 바로 채점', 494, 710, cap);
 
   // 도구 막대
-  g.rect(0, 224, W, 46, C.night);
-  g.box(8, 227, 464, 38, C.ink2, C.ink, 1, 3);
+  g.rect(0, 224, W, 46, C.themeL);
+  for (let x = 0; x < W; x += 8) g.pset(x, 268, C.theme);
+  g.box(8, 227, 464, 38, C.themeDD, C.ink, 1, 3);
   LIVE_TOOLS.forEach((name, i) => {
     const cx = 37 + i * 58;
     let on = TOOL_ON.some(([a, b, k]) => k === i && t >= a && t < b);
@@ -1018,15 +1022,15 @@ function sLive(g, t) {
       on = Math.floor((t - 720) / 7.5) % 8 === i;
       lift = on ? 2 : 0;
     }
-    g.box(cx - 24, 230 - lift, 48, 32, on ? C.yellow : C.ink, on ? C.white : C.ink2, 1, 3);
+    g.box(cx - 24, 230 - lift, 48, 32, on ? C.theme : C.themeX, on ? C.white : C.themeD, 1, 3);
     liveToolIcon(g, i, cx, 241 - lift, t);
-    g.text(name, cx, 252 - lift, { font: 'r7', color: on ? C.ink : C.gray, align: 'center' });
-    if (press && t - press[0] < 10) g.ring(cx, 246, 6 + (t - press[0]) * 2.5, C.yellow, 1);
+    g.text(name, cx, 252 - lift, { font: 'r7', color: on ? C.ink : C.theme, align: 'center' });
+    if (press && t - press[0] < 10) g.ring(cx, 246, 6 + (t - press[0]) * 2.5, C.white, 1);
   });
 
   // 들어올 때 아이리스, 나갈 때 와이프
-  if (t < 16) iris(g, BCX, 124, 560 * eOut(prog(t, 0, 16)), C.ink);
-  blockWipe(g, prog(t, 826, 840), C.navy);
+  if (t < 16) iris(g, BCX, 124, 560 * eOut(prog(t, 0, 16)), C.themeDD);
+  blockWipe(g, prog(t, 826, 840), C.themeDD);
 }
 
 // 라이브 장면 효과음 큐 (전역 프레임)
@@ -1066,10 +1070,10 @@ const CARDS = [
 ];
 
 function sSelect(g, t) {
-  checker(g, t, C.navy, C.night2, 22, 0.6, 0.4);
+  checker(g, t, C.theme, C.themeL, 22, 0.6, 0.4);
   // 헤더
   const hp = eBack(prog(t, 2, 14));
-  g.text('PLAYER SELECT', 240, Math.round(lerp(-30, 12, hp)), { scale: 2, color: C.yellow, fill2: C.orange, outline: C.ink, ow: 2, shadow: C.ink, sdx: 3, sdy: 3, align: 'center' });
+  g.text('PLAYER SELECT', 240, Math.round(lerp(-30, 12, hp)), { scale: 3, color: C.white, fill2: C.theme, outline: C.ink, ow: 2, shadow: C.themeDD, sdx: 3, sdy: 3, align: 'center' });
   if (t >= 10) typeText(g, '우리 아이에게 딱 맞는 모험을 골라요', 240, 42, t - 10, { per: 1, color: C.white, outline: C.ink, ow: 1, align: 'center' });
 
   const sel = [[18, 0], [42, 1], [66, 2]];
@@ -1091,7 +1095,7 @@ function sSelect(g, t) {
     g.rect(cx - 50, y + 84, 100, 1, C.ink);
     g.text(c.tag, cx, y + 96, { align: 'center', color: C.ink });
     g.text(c.kid.name, cx, y + 112, { font: 'r9', align: 'center', color: C.grayD });
-    chip(g, c.age, cx - 52, y - 8, { bg: C.orange, align: 'left', sh: 2, pad: 4, padY: 2 });
+    chip(g, c.age, cx - 52, y - 8, { bg: C.themeD, tol: C.ink, align: 'left', sh: 2, pad: 4, padY: 2 });
     c.icon(g, cx + 30, y + 8, t);
     if (on) {
       for (let k = 0; k < 3; k++) sparkle(g, cx - 40 + ((k * 37 + t) % 80), y + 12 + ((k * 23) % 50), 0.4 + 0.4 * Math.sin(t * 0.3 + k));
@@ -1127,19 +1131,19 @@ function sSelect(g, t) {
     chip(g, '나이·수준별 맞춤 커리큘럼', 240, 214, { bg: C.yellow, fg: C.ink, scale: 2, sh: 4 });
     g.restore();
   }
-  blockWipe(g, 1 - prog(t, 0, 12), C.navy, 24, true);
-  if (t >= 112) g.cover(C.paper, prog(t, 112, 120));
+  blockWipe(g, 1 - prog(t, 0, 12), C.themeDD, 24, true);
+  if (t >= 112) g.cover(C.themeL, prog(t, 112, 120));
 }
 
 // ─────────────────────────────────────────────
 // 6 · PARENT — 부모는 안심 (1080–1199)
 // ─────────────────────────────────────────────
 function sParent(g, t) {
-  g.rect(0, 0, W, H, C.paper);
+  g.rect(0, 0, W, H, C.themeL);
   for (let y = -20; y < H + 20; y += 24) {
     for (let x = 0; x < W + 24; x += 24) {
       const ox = (Math.floor(y / 24) % 2) * 12;
-      g.circle(x + ox, y + ((t * 0.3) % 24), 2, C.pink);
+      g.circle(x + ox, y + ((t * 0.3) % 24), 2, C.theme);
     }
   }
   // 하트 떠오름
@@ -1160,7 +1164,7 @@ function sParent(g, t) {
     const p = eBack(prog(t, 24, 36));
     g.save();
     g.translate(Math.round((1 - p) * -260), 0);
-    chip(g, '부모는 안심!', 26, 98, { bg: C.orange, scale: 3, align: 'left', sh: 5, pad: 8, padY: 5 });
+    chip(g, '부모는 안심!', 26, 98, { bg: C.themeD, tol: C.ink, scale: 3, align: 'left', sh: 5, pad: 8, padY: 5 });
     g.restore();
   }
   if (t >= 44) typeText(g, '오늘 무엇을 배웠는지 바로 알림으로', 28, 160, t - 44, { per: 1, color: C.brownD });
@@ -1183,10 +1187,10 @@ function sParent(g, t) {
   g.clip(sx, sy, sw, sh);
   g.text('9:41', sx + 4, sy + 3, { font: 'r7', color: C.ink });
   g.box(sx + sw - 16, sy + 3, 11, 6, C.green, C.ink);
-  g.rect(sx, sy + 13, sw, 20, C.orange);
+  g.rect(sx, sy + 13, sw, 20, C.themeD);
   g.rect(sx, sy + 33, sw, 1, C.ink);
   mascot(g, sx + 12, sy + 31, { r: 5, f: t, face: 'smile' });
-  g.text('리틀마인즈', sx + 24, sy + 17, { color: C.white, outline: C.ink, ow: 1 });
+  g.text('ClassIn', sx + 24, sy + 17, { color: C.white, outline: C.ink, ow: 1 });
 
   // 알림 카드
   if (t >= 26) {
@@ -1201,7 +1205,7 @@ function sParent(g, t) {
       const sp = eBack(prog(t, 40 + i * 3, 48 + i * 3));
       if (sp > 0) starIcon(g, sx + 18 + i * 20, cy + 37 - sp * 2, 4 + sp);
     }
-    if (t < 46 && Math.floor(t / 3) % 2) g.box(sx + 4, cy, sw - 10, 46, null, C.orange, 2, 3);
+    if (t < 46 && Math.floor(t / 3) % 2) g.box(sx + 4, cy, sw - 10, 46, null, C.themeD, 2, 3);
   }
   // 오늘의 리포트
   if (t >= 52) {
@@ -1231,9 +1235,9 @@ function sParent(g, t) {
   g.restore();
   if (t >= 30 && t < 50) {
     const k = t - 30;
-    for (let i = 0; i < 3; i++) g.oval(442 + 6, py + 40, 8 + i * 5 + k * 0.6, 8 + i * 5 + k * 0.6, C.orange, { from: -0.6, to: 0.6 });
+    for (let i = 0; i < 3; i++) g.oval(442 + 6, py + 40, 8 + i * 5 + k * 0.6, 8 + i * 5 + k * 0.6, C.themeD, { from: -0.6, to: 0.6 });
   }
-  if (t < 6) g.cover(C.paper, 1 - prog(t, 0, 6));
+  if (t < 6) g.cover(C.themeL, 1 - prog(t, 0, 6));
   if (t >= 114) g.cover(C.white, prog(t, 114, 120));
 }
 
@@ -1244,7 +1248,7 @@ const RAIN = ['A', 'B', 'C', '1', '2', '3', '+', '×', '★', 'a', '7', '='];
 
 function sFinale(g, t) {
   shake(g, t, 6, 10, 4);
-  rays(g, 240, 70, t, { n: 16, c1: C.orange, c2: C.orangeL, speed: 0.008 });
+  rays(g, 240, 62, t, { n: 16, c1: C.theme, c2: C.themeL, speed: 0.008 });
   // 공부 요소 비
   for (let i = 0; i < 26; i++) {
     const sp = 0.8 + rnd(i, 91) * 0.9;
@@ -1257,24 +1261,24 @@ function sFinale(g, t) {
   // 불꽃놀이
   const fw = [[2, 110, 70, C.yellow], [12, 370, 60, C.white], [26, 70, 130, C.pinkH], [40, 410, 130, C.yellow], [58, 240, 30, C.white], [80, 140, 40, C.lemon], [96, 340, 40, C.pink]];
   for (const [at, x, y, c] of fw) {
-    burst(g, t - at, x, y, { n: 28, seed: at + 1, speed: 2.4, grav: 0.05, life: 36, colors: [c, C.white, C.yellow], star: true });
+    burst(g, t - at, x, y, { n: 28, seed: at + 1, speed: 2.4, grav: 0.05, life: 36, colors: [c, C.themeD, C.pinkH, C.blue], star: true });
     if (t - at >= 0 && t - at < 3) g.circle(x, y, 6, C.white);
   }
 
   // 로고 쾅
-  const steps = [7, 6, 5, 4];
-  const s = t < 6 ? steps[Math.min(3, Math.floor(t / 1.5))] : 4;
-  const ly = t < 6 ? 20 - (s - 4) * 6 : 20;
+  const steps = [LOGO_S + 3, LOGO_S + 2, LOGO_S + 1, LOGO_S];
+  const s = t < 6 ? steps[Math.min(3, Math.floor(t / 1.5))] : LOGO_S;
+  const ly = t < 6 ? 14 - (s - LOGO_S) * 6 : 14;
   logo(g, 240, ly, s);
   if (t >= 6 && t < 9) g.cover(C.white, 0.5);
   if (t >= 6 && t < 30) {
     const k = t - 6;
-    g.oval(240, ly + 48, 150 + k * 6, 14 + k, C.white, { t: 2 });
+    g.oval(240, ly + 56, 130 + k * 6, 14 + k, C.white, { t: 2 });
   }
 
   if (t >= 12) {
     const p = eBack(prog(t, 12, 24));
-    chip(g, '놀면서 배우는 인터랙티브 수업', 240, Math.round(lerp(130, 86, p)), { bg: C.ink, fg: C.white, scale: 2, sh: 0, pad: 10 });
+    chip(g, '놀면서 배우는 인터랙티브 수업', 240, Math.round(lerp(130, 90, p)), { bg: C.themeDD, fg: C.white, scale: 2, sh: 4, pad: 10 });
   }
   if (t >= 22) typeText(g, '유·초등 학원의 온라인 라이브도, 오프라인 교실도 생생하게', 240, 126, t - 22, { per: 1, color: C.white, outline: C.ink, ow: 1, align: 'center' });
   if (t >= 34) {

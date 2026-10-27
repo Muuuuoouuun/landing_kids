@@ -1,5 +1,5 @@
 // 쇼릴 렌더러: 프레임을 소프트웨어로 그려 ffmpeg 로 바로 흘려보낸다.
-//   node showreel/render.mjs                    → public/showreel/little-minds-showreel.mp4 (+ poster.png)
+//   node showreel/render.mjs                    → public/showreel/classin-showreel.mp4 (+ .webm, poster.png)
 //   node showreel/render.mjs --stills 0,300,900 → 지정 프레임 PNG
 //   node showreel/render.mjs --sheet 30         → 30프레임 간격 컨택트 시트 PNG
 //   --out <dir>  스틸/시트 저장 위치 (기본 showreel/out)
@@ -8,7 +8,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { deflateSync } from 'node:zlib';
-import { Gfx, W, H } from './gfx.mjs';
+import { Gfx, DW, DH } from './gfx.mjs';
 import { FPS, FRAMES, renderFrame } from './scenes.mjs';
 import { renderAudio, SAMPLE_RATE } from './audio.mjs';
 
@@ -20,7 +20,10 @@ const opt = (name) => {
   const i = args.indexOf(name);
   return i >= 0 ? args[i + 1] : null;
 };
-const UPSCALE = 4; // 480x270 → 1920x1080
+const OUT_W = 1920;
+const OUT_H = 1080;
+// 576x324 → 1080p 는 정수배가 아니라서: 최근접 4배 확대 후 면적 평균으로 축소 (깜빡임 없는 선명한 픽셀)
+const UPSCALE_VF = `scale=${DW * 4}:${DH * 4}:flags=neighbor,scale=${OUT_W}:${OUT_H}:flags=area`;
 const outDir = opt('--out') || join(here, 'out');
 
 function frame(f) {
@@ -97,7 +100,7 @@ async function stills(list) {
   mkdirSync(outDir, { recursive: true });
   for (const f of list) {
     const p = join(outDir, `f${String(f).padStart(4, '0')}.png`);
-    writeFileSync(p, png(frame(f), W, H, 2));
+    writeFileSync(p, png(frame(f), DW, DH, 2));
     console.log(p);
   }
 }
@@ -107,8 +110,8 @@ function sheet(step) {
   const list = [];
   for (let f = 0; f < FRAMES; f += step) list.push(f);
   const cols = 6;
-  const tw = W / 2;
-  const th = H / 2;
+  const tw = DW / 2;
+  const th = DH / 2;
   const rows = Math.ceil(list.length / cols);
   const SW = cols * (tw + 2);
   const SH = rows * (th + 2);
@@ -119,7 +122,7 @@ function sheet(step) {
     const oy = Math.floor(i / cols) * (th + 2);
     for (let y = 0; y < th; y++) {
       for (let x = 0; x < tw; x++) {
-        const s = (y * 2 * W + x * 2) * 4;
+        const s = (y * 2 * DW + x * 2) * 4;
         out.set(px.subarray(s, s + 4), ((oy + y) * SW + ox + x) * 4);
       }
     }
@@ -139,21 +142,21 @@ async function video() {
   console.timeEnd('audio');
 
   // 한 번 그린 프레임으로 MP4(H.264, 사파리·모바일) + WebM(VP9, H.264 없는 브라우저) 동시 인코딩
-  const mp4 = join(dest, 'little-minds-showreel.mp4');
-  const webm = join(dest, 'little-minds-showreel.webm');
+  const mp4 = join(dest, 'classin-showreel.mp4');
+  const webm = join(dest, 'classin-showreel.webm');
   const color = ['-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv'];
   const ff = spawn('ffmpeg', [
     '-y', '-loglevel', 'error',
-    '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${W}x${H}`, '-r', String(FPS), '-i', '-',
+    '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${DW}x${DH}`, '-r', String(FPS), '-i', '-',
     '-i', wavPath,
-    '-filter_complex', `[0:v]scale=${W * UPSCALE}:${H * UPSCALE}:flags=neighbor,scale=out_color_matrix=bt709:out_range=tv:flags=neighbor,format=yuv420p,split[a][b]`,
+    '-filter_complex', `[0:v]${UPSCALE_VF},scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,split[a][b]`,
     '-map', '[a]', '-map', '1:a',
-    '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', '14',
+    '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', '19',
     '-profile:v', 'high', '-r', String(FPS), '-g', String(FPS), ...color,
     '-c:a', 'aac', '-b:a', '192k', '-ar', String(SAMPLE_RATE),
     '-movflags', '+faststart', '-shortest', mp4,
     '-map', '[b]', '-map', '1:a',
-    '-c:v', 'libvpx-vp9', '-crf', '20', '-b:v', '0', '-deadline', 'good', '-cpu-used', '4', '-row-mt', '1',
+    '-c:v', 'libvpx-vp9', '-crf', '30', '-b:v', '0', '-deadline', 'good', '-cpu-used', '4', '-row-mt', '1',
     '-r', String(FPS), '-g', String(FPS), ...color,
     '-c:a', 'libopus', '-b:a', '160k', '-shortest', webm,
   ], { stdio: ['pipe', 'inherit', 'inherit'] });
@@ -167,7 +170,13 @@ async function video() {
   await new Promise((res, rej) => ff.on('close', (c) => (c === 0 ? res() : rej(new Error(`ffmpeg ${c}`)))));
   console.timeEnd('frames');
 
-  writeFileSync(join(dest, 'poster.png'), png(frame(FRAMES - 1), W, H, UPSCALE));
+  // 포스터: 마지막 프레임을 영상과 같은 확대 과정으로
+  const poster = spawn('ffmpeg', [
+    '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${DW}x${DH}`, '-i', '-',
+    '-vf', UPSCALE_VF, '-frames:v', '1', join(dest, 'poster.png'),
+  ], { stdio: ['pipe', 'inherit', 'inherit'] });
+  poster.stdin.end(Buffer.from(frame(FRAMES - 1)));
+  await new Promise((res, rej) => poster.on('close', (c) => (c === 0 ? res() : rej(new Error(`ffmpeg ${c}`)))));
   console.log(mp4);
   console.log(webm);
 }

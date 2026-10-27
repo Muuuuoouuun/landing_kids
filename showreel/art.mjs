@@ -326,7 +326,7 @@ export function device(g, x, y, w, h, o = {}) {
 
 // 글자 칩 (브랜드 랜딩의 네오브루탈 버튼처럼 외곽선+하드섀도)
 export function chip(g, str, x, y, o = {}) {
-  const { bg = C.orange, fg = C.white, scale = 1, font = 'b11', pad = 6, padY = 4, sh = 3, align = 'center', line = C.ink, icon = null } = o;
+  const { bg = C.themeD, fg = C.white, tol = null, scale = 1, font = 'b11', pad = 6, padY = 4, sh = 3, align = 'center', line = C.ink, icon = null } = o;
   const tw = g.measure(str, { font, scale });
   const iw = icon ? icon.w + 4 : 0;
   const w = tw + iw + pad * 2;
@@ -335,7 +335,7 @@ export function chip(g, str, x, y, o = {}) {
   if (sh) g.rect(bx + sh, y + sh, w, h, C.ink);
   g.box(bx, y, w, h, bg, line);
   if (icon) icon.draw(bx + pad, y + padY);
-  g.text(str, bx + pad + iw, y + padY + 1, { font, scale, color: fg });
+  g.text(str, bx + pad + iw, y + padY + 1, { font, scale, color: fg, outline: tol, ow: 1 });
   return [bx, y, w, h];
 }
 
@@ -396,19 +396,7 @@ export function rays(g, cx, cy, f, o = {}) {
 
 // 아이리스(원형) 전환: 원 밖을 c로 채움
 export function iris(g, cx, cy, R, c = C.ink) {
-  const { w, h } = g;
-  for (let y = 0; y < h; y++) {
-    const dy = y + 0.5 - cy;
-    if (Math.abs(dy) >= R) {
-      g.rect(-g.ox, y - g.oy, w, 1, c);
-      continue;
-    }
-    const hw = Math.sqrt(R * R - dy * dy);
-    const l = Math.round(cx - hw);
-    const r = Math.round(cx + hw);
-    g.rect(-g.ox, y - g.oy, l, 1, c);
-    g.rect(r - g.ox, y - g.oy, w - r, 1, c);
-  }
+  g.irisOut(cx, cy, R, c);
 }
 
 // 대각선 블록 와이프. t:0→1 덮고, 반대로 1→0 걷어냄
@@ -432,14 +420,14 @@ export function blockWipe(g, t, c = C.ink, cell = 24, reverse = false) {
 
 // 반짝이는 별 배경
 export function starfield(g, f, o = {}) {
-  const { n = 70, seed = 5, w = 480, h = 270, drift = 0.05 } = o;
+  const { n = 70, seed = 5, w = 480, h = 270, drift = 0.05, cols = [C.yellow, C.pink, C.white], dim = C.gray } = o;
   for (let i = 0; i < n; i++) {
     const x = (rnd(i, seed) * w + f * drift * (1 + (i % 3))) % w;
     const y = rnd(i, seed + 1) * h;
     const tw = Math.sin(f * 0.12 + i * 1.7);
-    const c = i % 7 === 0 ? C.yellow : i % 5 === 0 ? C.pink : C.white;
+    const c = i % 7 === 0 ? cols[0] : i % 5 === 0 ? cols[1] : cols[2];
     if (i % 9 === 0 && tw > 0.2) sparkle(g, Math.round(x), Math.round(y), 0.5 + tw * 0.4, c);
-    else if (tw > -0.6) g.rect(x, y, 1, 1, tw > 0.5 ? c : C.gray);
+    else if (tw > -0.6) g.rect(x, y, 1, 1, tw > 0.5 ? c : dim);
   }
 }
 

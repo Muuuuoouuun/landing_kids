@@ -1,8 +1,15 @@
 // 아주 작은 픽셀 래스터라이저. 캔버스 없이 Uint32 버퍼에 직접 그린다.
 // 같은 코드가 Node(영상 렌더)와 브라우저(미리보기) 양쪽에서 돈다.
+//
+// 장면은 설계 좌표(W×H = 480×270)로 그리고, 실제 픽셀은 S배(576×324)로 찍는다.
+// 원·선·삼각형·디더는 실제 픽셀 해상도로 더 촘촘해지고, 폰트·스프라이트는
+// 정수 픽셀 크기를 유지해 더 고운 픽셀이 된다. 테두리는 실제 픽셀 두께로 고정.
 
 export const W = 480;
 export const H = 270;
+export const S = 1.2;
+export const DW = Math.round(W * S);
+export const DH = Math.round(H * S);
 
 // 0xAABBGGRR (리틀 엔디언에서 메모리상 RGBA)
 export function rgb(hex) {
@@ -52,6 +59,13 @@ export const C = {
   hairB: rgb('#8A5A36'),
   hairY: rgb('#E3B35B'),
   glass: rgb('#CFEFFF'),
+  // 클래스인 테마: 파스텔 연두
+  themeL: rgb('#EAF8DC'),
+  theme: rgb('#C6EBA4'),
+  themeM: rgb('#9ED77A'),
+  themeD: rgb('#5FAE45'),
+  themeDD: rgb('#2F6B2E'),
+  themeX: rgb('#22472A'),
 };
 
 // 스프라이트 문자열용 글자 → 색
@@ -67,10 +81,13 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map((v) => 
 export const bayer = (x, y) => BAYER[((y & 3) << 2) | (x & 3)];
 
 export class Gfx {
-  constructor(fonts, w = W, h = H) {
-    this.w = w;
-    this.h = h;
-    this.bytes = new Uint8ClampedArray(w * h * 4);
+  constructor(fonts, s = S) {
+    this.w = W;
+    this.h = H;
+    this.s = s;
+    this.dw = Math.round(W * s);
+    this.dh = Math.round(H * s);
+    this.bytes = new Uint8ClampedArray(this.dw * this.dh * 4);
     this.buf = new Uint32Array(this.bytes.buffer);
     this.fonts = fonts;
     this.glyphCache = new Map();
@@ -83,8 +100,8 @@ export class Gfx {
     this.oy = 0;
     this.cx0 = 0;
     this.cy0 = 0;
-    this.cx1 = this.w;
-    this.cy1 = this.h;
+    this.cx1 = this.dw;
+    this.cy1 = this.dh;
     this.dith = 1; // 1 미만이면 모든 그리기를 디더 투명도로
     this.stack.length = 0;
   }
@@ -102,28 +119,41 @@ export class Gfx {
     this.oy += Math.round(dy);
   }
 
+  // 설계 좌표 → 실제 픽셀
+  X(x) {
+    return Math.round((x + this.ox) * this.s);
+  }
+
+  Y(y) {
+    return Math.round((y + this.oy) * this.s);
+  }
+
+  // 설계 길이 → 실제 픽셀 두께 (최소 1)
+  T(t) {
+    return Math.max(1, Math.round(t * this.s));
+  }
+
   // 현재 변환 기준 사각형과 교집합으로 클립
   clip(x, y, w, h) {
-    const x0 = Math.round(x) + this.ox;
-    const y0 = Math.round(y) + this.oy;
-    this.cx0 = Math.max(this.cx0, x0);
-    this.cy0 = Math.max(this.cy0, y0);
-    this.cx1 = Math.min(this.cx1, x0 + Math.round(w));
-    this.cy1 = Math.min(this.cy1, y0 + Math.round(h));
+    this.cx0 = Math.max(this.cx0, this.X(x));
+    this.cy0 = Math.max(this.cy0, this.Y(y));
+    this.cx1 = Math.min(this.cx1, this.X(x + w));
+    this.cy1 = Math.min(this.cy1, this.Y(y + h));
   }
 
   clear(c) {
     this.buf.fill(c);
   }
 
-  // 화면 좌표 기준 원시 사각형 (클립/디더 적용)
+  // 실제 픽셀 사각형 (클립/디더 적용)
   _span(x0, y0, x1, y1, c) {
     if (x0 < this.cx0) x0 = this.cx0;
     if (y0 < this.cy0) y0 = this.cy0;
     if (x1 > this.cx1) x1 = this.cx1;
     if (y1 > this.cy1) y1 = this.cy1;
     if (x0 >= x1 || y0 >= y1) return;
-    const { buf, w } = this;
+    const { buf } = this;
+    const w = this.dw;
     if (this.dith >= 1) {
       for (let y = y0; y < y1; y++) buf.fill(c, y * w + x0, y * w + x1);
     } else {
@@ -136,62 +166,77 @@ export class Gfx {
   }
 
   pset(x, y, c) {
-    x = Math.round(x) + this.ox;
-    y = Math.round(y) + this.oy;
-    this._span(x, y, x + 1, y + 1, c);
+    const px = this.X(x);
+    const py = this.Y(y);
+    this._span(px, py, px + 1, py + 1, c);
   }
 
+  // 1 이하 두께는 늘 실제 1픽셀, 그 이상은 이웃과 이어지게 끝점 기준
   rect(x, y, w, h, c) {
-    const x0 = Math.round(x) + this.ox;
-    const y0 = Math.round(y) + this.oy;
-    this._span(x0, y0, x0 + Math.round(w), y0 + Math.round(h), c);
+    if (w <= 0 || h <= 0) return;
+    const x0 = this.X(x);
+    const y0 = this.Y(y);
+    const x1 = w <= 1 ? x0 + 1 : Math.max(x0 + 1, this.X(x + w));
+    const y1 = h <= 1 ? y0 + 1 : Math.max(y0 + 1, this.Y(y + h));
+    this._span(x0, y0, x1, y1, c);
   }
 
-  // 외곽선 박스. r>0 이면 픽셀식 둥근 모서리
+  // 외곽선 박스. t = 테두리(설계 단위, 실제 픽셀로 고정), r>0 이면 계단식 둥근 모서리
   box(x, y, w, h, fill, line = C.ink, t = 1, r = 0) {
-    x = Math.round(x);
-    y = Math.round(y);
-    w = Math.round(w);
-    h = Math.round(h);
+    const x0 = this.X(x);
+    const y0 = this.Y(y);
+    const x1 = Math.max(x0 + 2, this.X(x + w));
+    const y1 = Math.max(y0 + 2, this.Y(y + h));
+    const T = this.T(t);
     if (fill == null) {
-      // 테두리만
-      this.rect(x, y, w, t, line);
-      this.rect(x, y + h - t, w, t, line);
-      this.rect(x, y + t, t, h - 2 * t, line);
-      this.rect(x + w - t, y + t, t, h - 2 * t, line);
+      this._span(x0, y0, x1, y0 + T, line);
+      this._span(x0, y1 - T, x1, y1, line);
+      this._span(x0, y0 + T, x0 + T, y1 - T, line);
+      this._span(x1 - T, y0 + T, x1, y1 - T, line);
       return;
     }
-    if (r > 0) {
-      this.rbox(x, y, w, h, line, r);
-      if (fill != null) this.rbox(x + t, y + t, w - 2 * t, h - 2 * t, fill, Math.max(0, r - t));
-      return;
-    }
-    if (line != null) this.rect(x, y, w, h, line);
-    if (fill != null) this.rect(x + t, y + t, w - 2 * t, h - 2 * t, fill);
+    const R = Math.round(r * this.s);
+    if (line != null) this._rspan(x0, y0, x1, y1, line, R);
+    this._rspan(x0 + T, y0 + T, x1 - T, y1 - T, fill, Math.max(0, R - T));
   }
 
-  // 모서리를 계단식으로 깎은 채움 박스
-  rbox(x, y, w, h, c, r = 2) {
-    if (r <= 0) return this.rect(x, y, w, h, c);
-    r = Math.min(r, Math.floor(w / 2), Math.floor(h / 2));
-    for (let i = 0; i < r; i++) {
-      const cut = r - Math.round(Math.sqrt(r * r - (r - i - 0.5) ** 2));
-      this.rect(x + cut, y + i, w - 2 * cut, 1, c);
-      this.rect(x + cut, y + h - 1 - i, w - 2 * cut, 1, c);
+  // 모서리를 계단식으로 깎은 채움 (실제 픽셀)
+  _rspan(x0, y0, x1, y1, c, R) {
+    const w = x1 - x0;
+    const h = y1 - y0;
+    if (w <= 0 || h <= 0) return;
+    R = Math.min(R, Math.floor(w / 2), Math.floor(h / 2));
+    if (R <= 0) return this._span(x0, y0, x1, y1, c);
+    for (let i = 0; i < R; i++) {
+      const cut = R - Math.round(Math.sqrt(R * R - (R - i - 0.5) ** 2));
+      this._span(x0 + cut, y0 + i, x1 - cut, y0 + i + 1, c);
+      this._span(x0 + cut, y1 - 1 - i, x1 - cut, y1 - i, c);
     }
-    this.rect(x, y + r, w, h - 2 * r, c);
+    this._span(x0, y0 + R, x1, y1 - R, c);
+  }
+
+  rbox(x, y, w, h, c, r = 2) {
+    const x0 = this.X(x);
+    const y0 = this.Y(y);
+    this._rspan(x0, y0, Math.max(x0 + 1, this.X(x + w)), Math.max(y0 + 1, this.Y(y + h)), c, Math.round(r * this.s));
   }
 
   ellipse(cx, cy, rx, ry, c) {
     if (rx <= 0 || ry <= 0) return;
-    const iy = Math.ceil(ry);
-    for (let dy = -iy; dy <= iy; dy++) {
-      const t = 1 - (dy / ry) ** 2;
+    const s = this.s;
+    const dcx = (cx + this.ox) * s;
+    const dcy = (cy + this.oy) * s;
+    const drx = rx * s;
+    const dry = ry * s;
+    const y0 = Math.round(dcy - dry);
+    const y1 = Math.round(dcy + dry);
+    for (let y = y0; y <= y1; y++) {
+      const t = 1 - ((y + 0.5 - dcy) / dry) ** 2;
       if (t < 0) continue;
-      const hw = rx * Math.sqrt(t);
-      const x0 = Math.round(cx - hw);
-      const x1 = Math.round(cx + hw);
-      if (x1 > x0) this.rect(x0, Math.round(cy + dy), x1 - x0, 1, c);
+      const hw = drx * Math.sqrt(t);
+      const a = Math.round(dcx - hw);
+      const b = Math.round(dcx + hw);
+      if (b > a) this._span(a, y, b, y + 1, c);
     }
   }
 
@@ -200,30 +245,35 @@ export class Gfx {
   }
 
   ring(cx, cy, r, c, t = 1) {
-    const ro = r + 0.5;
-    const ri = r - t + 0.5;
-    const R = Math.ceil(ro);
-    for (let dy = -R; dy <= R; dy++) {
-      for (let dx = -R; dx <= R; dx++) {
-        const d = Math.sqrt(dx * dx + dy * dy);
-        if (d <= ro && d > ri) this.pset(cx + dx, cy + dy, c);
+    const s = this.s;
+    const dcx = (cx + this.ox) * s;
+    const dcy = (cy + this.oy) * s;
+    const ro = r * s + 0.5;
+    const ri = ro - this.T(t);
+    const y0 = Math.floor(dcy - ro);
+    const y1 = Math.ceil(dcy + ro);
+    for (let y = y0; y <= y1; y++) {
+      for (let x = Math.floor(dcx - ro); x <= Math.ceil(dcx + ro); x++) {
+        const d = Math.hypot(x + 0.5 - dcx, y + 0.5 - dcy);
+        if (d <= ro && d > ri) this._span(x, y, x + 1, y + 1, c);
       }
     }
   }
 
   line(x0, y0, x1, y1, c, t = 1) {
-    x0 = Math.round(x0);
-    y0 = Math.round(y0);
-    x1 = Math.round(x1);
-    y1 = Math.round(y1);
+    x0 = this.X(x0);
+    y0 = this.Y(y0);
+    x1 = this.X(x1);
+    y1 = this.Y(y1);
+    const T = this.T(t);
     const dx = Math.abs(x1 - x0);
     const dy = -Math.abs(y1 - y0);
     const sx = x0 < x1 ? 1 : -1;
     const sy = y0 < y1 ? 1 : -1;
     let err = dx + dy;
-    const o = Math.floor(t / 2);
+    const o = Math.floor(T / 2);
     for (;;) {
-      this.rect(x0 - o, y0 - o, t, t, c);
+      this._span(x0 - o, y0 - o, x0 - o + T, y0 - o + T, c);
       if (x0 === x1 && y0 === y1) break;
       const e2 = 2 * err;
       if (e2 >= dy) { err += dy; x0 += sx; }
@@ -232,7 +282,9 @@ export class Gfx {
   }
 
   tri(ax, ay, bx, by, cx, cy, c) {
-    const pts = [[ax, ay], [bx, by], [cx, cy]].sort((p, q) => p[1] - q[1]);
+    const s = this.s;
+    const P = (x, y) => [(x + this.ox) * s, (y + this.oy) * s];
+    const pts = [P(ax, ay), P(bx, by), P(cx, cy)].sort((p, q) => p[1] - q[1]);
     const [[x0, y0], [x1, y1], [x2, y2]] = pts;
     const ys = Math.round(y0);
     const ye = Math.round(y2);
@@ -243,7 +295,7 @@ export class Gfx {
       const xb = yy < y1 ? x0 + (x1 - x0) * k(y0, y1) : x1 + (x2 - x1) * k(y1, y2);
       const l = Math.round(Math.min(xa, xb));
       const r = Math.round(Math.max(xa, xb));
-      if (r > l) this.rect(l, y, r - l, 1, c);
+      if (r > l) this._span(l, y, r, y + 1, c);
     }
   }
 
@@ -254,14 +306,19 @@ export class Gfx {
 
   // 타원 테두리 (rot 라디안 회전, from~to 각도 구간만)
   oval(cx, cy, rx, ry, c, { rot = 0, t = 1, from = 0, to = Math.PI * 2 } = {}) {
-    const n = Math.max(24, Math.ceil((rx + ry) * 3));
+    const s = this.s;
+    const n = Math.max(24, Math.ceil((rx + ry) * 3 * s));
     const cr = Math.cos(rot);
     const sr = Math.sin(rot);
+    const T = this.T(t);
+    const o = Math.floor(T / 2);
     for (let i = 0; i <= n; i++) {
       const a = from + ((to - from) * i) / n;
       const ex = Math.cos(a) * rx;
       const ey = Math.sin(a) * ry;
-      this.rect(cx + ex * cr - ey * sr - (t >> 1), cy + ex * sr + ey * cr - (t >> 1), t, t, c);
+      const px = this.X(cx + ex * cr - ey * sr);
+      const py = this.Y(cy + ex * sr + ey * cr);
+      this._span(px - o, py - o, px - o + T, py - o + T, c);
     }
   }
 
@@ -289,38 +346,35 @@ export class Gfx {
     this.dith = prev;
   }
 
-  // rows: 문자열 배열. sx/sy 는 실수 스케일(스쿼시&스트레치용)
+  // rows: 문자열 배열. sx/sy 는 배율 — 실제 픽셀 정수배로 맞춰 픽셀이 고르게 찍힌다
   sprite(rows, x, y, { sx = 1, sy = 1, flip = false, pal = null, ax = 0, ay = 0 } = {}) {
     const sh = rows.length;
     const sw = rows[0].length;
-    const dw = Math.max(1, Math.round(sw * Math.abs(sx)));
-    const dh = Math.max(1, Math.round(sh * Math.abs(sy)));
-    const x0 = Math.round(x - ax * dw);
-    const y0 = Math.round(y - ay * dh);
-    for (let j = 0; j < dh; j++) {
-      const v = Math.min(sh - 1, Math.floor(((j + 0.5) * sh) / dh));
+    const kx = Math.max(1, Math.round(Math.abs(sx) * this.s));
+    const ky = Math.max(1, Math.round(Math.abs(sy) * this.s));
+    const x0 = this.X(x) - Math.round(ax * sw * kx);
+    const y0 = this.Y(y) - Math.round(ay * sh * ky);
+    for (let v = 0; v < sh; v++) {
       const row = rows[v];
       let run = -1;
       let runC = 0;
-      for (let i = 0; i <= dw; i++) {
+      for (let i = 0; i <= sw; i++) {
         let col = 0;
-        if (i < dw) {
-          let u = Math.min(sw - 1, Math.floor(((i + 0.5) * sw) / dw));
-          if (flip) u = sw - 1 - u;
-          const ch = row[u];
+        if (i < sw) {
+          const ch = row[flip ? sw - 1 - i : i];
           if (ch !== '.') col = (pal && pal[ch]) || SP[ch] || 0;
         }
         if (col !== runC) {
-          if (runC) this.rect(x0 + run, y0 + j, i - run, 1, runC);
+          if (runC) this._span(x0 + run * kx, y0 + v * ky, x0 + i * kx, y0 + (v + 1) * ky, runC);
           run = i;
           runC = col;
         }
       }
     }
-    return [x0, y0, dw, dh];
   }
 
   // ───── 텍스트 (BDF 비트맵) ─────
+  // scale·ow·sdx·sdy 는 실제 픽셀 단위 — 글자 픽셀이 고르게 찍힌다
   glyph(font, ch) {
     const key = font + ch;
     let g = this.glyphCache.get(key);
@@ -342,7 +396,7 @@ export class Gfx {
     return g;
   }
 
-  cap(font) {
+  _capPx(font) {
     const f = this.fonts[font];
     if (f._cap == null) {
       const g = f.glyphs['가'] || f.glyphs.H;
@@ -351,29 +405,38 @@ export class Gfx {
     return f._cap;
   }
 
-  measure(str, { font = 'b11', scale = 1, sp = 0 } = {}) {
+  // 대문자/한글 높이 (설계 단위)
+  cap(font) {
+    return this._capPx(font) / this.s;
+  }
+
+  _measurePx(str, font, scale, sp) {
     let w = 0;
     for (const ch of str) w += (this.glyph(font, ch).dw + sp) * scale;
     return w - sp * scale;
   }
 
-  // 반환: 그린 폭. each(i,ch) → {dx,dy,hide} 로 글자별 애니메이션
+  // 글자 폭 (설계 단위)
+  measure(str, { font = 'b11', scale = 1, sp = 0 } = {}) {
+    return this._measurePx(str, font, scale, sp) / this.s;
+  }
+
+  // 반환: 그린 폭(설계 단위). each(i,ch) → {dx,dy,hide,color} 로 글자별 애니메이션
   text(str, x, y, o = {}) {
     const {
       font = 'b11', scale: s = 1, color = C.ink, fill2 = null, outline = null,
       ow = s, shadow = null, sdx = s, sdy = s, align = 'left', sp = 0, each = null,
     } = o;
-    const width = this.measure(str, { font, scale: s, sp });
-    let bx = Math.round(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0));
-    const base = Math.round(y) + this.cap(font) * s;
-    const capPx = this.cap(font);
-    const chars = [...str];
+    const wpx = this._measurePx(str, font, s, sp);
+    const bx = this.X(x) - (align === 'center' ? Math.round(wpx / 2) : align === 'right' ? wpx : 0);
+    const capPx = this._capPx(font);
+    const base = this.Y(y) + capPx * s;
     const placed = [];
     let pen = bx;
-    chars.forEach((ch, i) => {
+    [...str].forEach((ch, i) => {
       const g = this.glyph(font, ch);
       const a = each ? each(i, ch) || {} : {};
-      if (!a.hide) placed.push([g, pen + Math.round(a.dx || 0), base + Math.round(a.dy || 0), a.color]);
+      if (!a.hide) placed.push([g, pen + Math.round((a.dx || 0) * this.s), base + Math.round((a.dy || 0) * this.s), a.color]);
       pen += (g.dw + sp) * s;
     });
     const pass = (dx, dy, grow, colFn) => {
@@ -381,23 +444,43 @@ export class Gfx {
         const { px } = g;
         for (let k = 0; k < px.length; k += 2) {
           const c = colFn(px[k + 1], cc);
-          this.rect(gx + px[k] * s + dx - grow, gy + px[k + 1] * s + dy - grow, s + 2 * grow, s + 2 * grow, c);
+          const x0 = gx + px[k] * s + dx - grow;
+          const y0 = gy + px[k + 1] * s + dy - grow;
+          this._span(x0, y0, x0 + s + 2 * grow, y0 + s + 2 * grow, c);
         }
       }
     };
     if (shadow != null) pass(sdx, sdy, outline != null ? ow : 0, () => shadow);
     if (outline != null) pass(0, 0, ow, () => outline);
     pass(0, 0, 0, (py, cc) => cc || (fill2 != null && py > -capPx / 2 ? fill2 : color));
-    return width;
+    return wpx / this.s;
+  }
+
+  // 원 밖을 c 로 채움 (아이리스 전환)
+  irisOut(cx, cy, R, c) {
+    const s = this.s;
+    const dcx = (cx + this.ox) * s;
+    const dcy = (cy + this.oy) * s;
+    const dR = R * s;
+    for (let y = 0; y < this.dh; y++) {
+      const dy = y + 0.5 - dcy;
+      if (Math.abs(dy) >= dR) {
+        this._span(0, y, this.dw, y + 1, c);
+        continue;
+      }
+      const hw = Math.sqrt(dR * dR - dy * dy);
+      this._span(0, y, Math.round(dcx - hw), y + 1, c);
+      this._span(Math.round(dcx + hw), y, this.dw, y + 1, c);
+    }
   }
 
   // 화면 전체를 디더 패턴으로 덮기(전환용)
   cover(c, level) {
     if (level <= 0) return;
-    const { buf, w, h } = this;
+    const { buf, dw, dh } = this;
     if (level >= 1) return buf.fill(c);
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) if (bayer(x, y) < level) buf[y * w + x] = c;
+    for (let y = 0; y < dh; y++) {
+      for (let x = 0; x < dw; x++) if (bayer(x, y) < level) buf[y * dw + x] = c;
     }
   }
 }
