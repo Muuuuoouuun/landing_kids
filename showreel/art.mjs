@@ -222,33 +222,6 @@ export function kidBust(g, x, y, r, kid, o = {}) {
   kidHead(g, x, y, r, kid, o);
 }
 
-// 뒤에서 본 아이 (교실). x,y = 머리 중심
-export function kidBack(g, x, y, r, kid, o = {}) {
-  const { hand = 0 } = o;
-  if (hand > 0) {
-    const hx = x + r * 1.0;
-    const hy = y - r * 0.4 - hand * r * 1.2;
-    g.line(x + r * 0.9, y + r * 1.0, hx, hy, C.ink, 3);
-    g.line(x + r * 0.9, y + r * 1.0, hx, hy, kid.shirt, 1);
-    g.circle(hx, hy, r * 0.32 + 1, C.ink);
-    g.circle(hx, hy, r * 0.32, C.skin);
-  }
-  g.box(x - r * 1.15, y + r * 0.7, r * 2.3, r * 1.4, kid.shirt, C.ink, 1, Math.round(r * 0.5));
-  if (kid.style === 'buns') {
-    for (const s of [-1, 1]) {
-      g.circle(x + s * r * 0.8, y - r * 0.6, r * 0.42 + 1, C.ink);
-      g.circle(x + s * r * 0.8, y - r * 0.6, r * 0.42, kid.hair);
-    }
-  }
-  if (kid.style === 'long') {
-    g.ellipse(x, y + r * 0.4, r * 1.0 + 1, r * 0.95 + 1, C.ink);
-    g.ellipse(x, y + r * 0.4, r * 1.0, r * 0.95, kid.hair);
-  }
-  g.circle(x, y, r + 1, C.ink);
-  g.circle(x, y, r, kid.style === 'cap' ? kid.cap : kid.hair);
-  g.rect(x - r * 0.3, y - r * 0.6, r * 0.3, r * 0.25, C.white);
-}
-
 // 어른 (엄마·선생님). x,y = 발 아래 중앙
 export function adult(g, x, y, o = {}) {
   const { hair = C.hair, top = C.mint, style = 'mom', point = 0, f = 0, mood = 'smile' } = o;
@@ -296,24 +269,6 @@ export function adult(g, x, y, o = {}) {
   g.rect(x + 4, hy + 4, 2, 1, C.pink);
 }
 
-// ───── 소품 ─────
-export const HAND = [
-  '...kk.......',
-  '..kwwk......',
-  '..kwwk......',
-  '..kwwk......',
-  '..kwwkkk....',
-  '..kwwkwwkkk.',
-  '..kwwkwwkwak',
-  'kkkwwwwwwwak',
-  'kwkwwwwwwwak',
-  'kwwwwwwwwwak',
-  '.kwwwwwwwwak',
-  '.kwwwwwwwak.',
-  '..kwwwwwwak.',
-  '...kwwwwak..',
-  '...kkkkkkk..',
-];
 export const APPLE = [
   '.....kek.',
   '....kGk..',
@@ -335,21 +290,6 @@ export const HEART = [
   '...kPk...',
   '....k....',
 ];
-export const CROWN = [
-  'k....k....k',
-  'kk..kyk..kk',
-  'kykkyyykkyk',
-  'kyyyyyyyyyk',
-  'kyPyyuyyPyk',
-  'kyyyyyyyyyk',
-  'kkkkkkkkkkk',
-];
-
-export function hand(g, x, y, press = 0) {
-  // x,y = 손가락 끝
-  g.sprite(HAND, x - 3, y + press, { sx: 1, sy: 1 - press * 0.08 });
-}
-
 export function starIcon(g, x, y, r, o = {}) {
   const { c = C.yellow, rot = 0, line = C.ink } = o;
   g.star(x, y, r + 1.6, line, rot, 5, 0.5);
@@ -373,57 +313,6 @@ export function sparkle(g, x, y, s, c = C.white) {
   g.rect(x - L, y, L * 2 + 1, 1, c);
   g.rect(x, y - L, 1, L * 2 + 1, c);
   if (s > 0.6) g.rect(x - 1, y - 1, 3, 3, c);
-}
-
-export function cloud(g, x, y, s = 1, c = C.white) {
-  const parts = [[0, 0, 10], [12, -5, 12], [25, 0, 9], [-10, 3, 7], [34, 4, 6]];
-  for (const [dx, dy, r] of parts) g.circle(x + dx * s, y + dy * s, r * s + 1, C.ink);
-  for (const [dx, dy, r] of parts) g.circle(x + dx * s, y + dy * s, r * s, c);
-  g.rect(x - 16 * s, y + 4 * s, 56 * s, 7 * s, c);
-  g.rect(x - 17 * s, y + 10 * s, 58 * s, 1, C.ink);
-  for (const [dx, dy, r] of parts) g.rect(x + dx * s - r * s * 0.4, y + dy * s - r * s * 0.6, 2, 1, C.white);
-}
-
-export function tree(g, x, y, s = 1) {
-  g.box(x - 3 * s, y - 16 * s, 6 * s, 16 * s, C.brown, C.ink);
-  const blobs = [[0, -26, 12], [-9, -20, 8], [9, -19, 8]];
-  for (const [dx, dy, r] of blobs) g.circle(x + dx * s, y + dy * s, r * s + 1, C.ink);
-  for (const [dx, dy, r] of blobs) g.circle(x + dx * s, y + dy * s, r * s, C.green);
-  g.circle(x - 4 * s, y - 30 * s, 3 * s, C.greenL);
-}
-
-export function wifi(g, x, y, f, c = C.ink, n = 3) {
-  // x,y = 아래 점
-  g.rect(x - 1, y - 1, 3, 3, c);
-  for (let i = 1; i <= n; i++) {
-    const on = Math.floor(f / 8) % (n + 1) >= i;
-    const R = 3 + i * 4;
-    for (let a = -0.8; a <= 0.8; a += 0.04) {
-      const px = x + Math.sin(a) * R;
-      const py = y - Math.cos(a) * R;
-      g.rect(px - 1, py - 1, 2, 2, on ? c : C.gray);
-    }
-  }
-}
-
-// ? 블록. bump: 위로 튐(px), used: 다 쓴 블록
-const BLOCK_TONES = {
-  q: [C.yellow, C.yellowD, C.lemon],
-  used: [C.brownL, C.brown, C.gold],
-  ok: [C.green, C.greenD, C.greenL],
-};
-export function qblock(g, x, y, s, label, o = {}) {
-  const { bump = 0, tone = 'q', glow = false } = o;
-  const [base, dark, lite] = Array.isArray(tone) ? tone : BLOCK_TONES[tone];
-  const yy = y - bump;
-  g.rect(x + 3, yy + 3, s, s, C.ink);
-  g.box(x, yy, s, s, base, C.ink, 1, 0);
-  g.rect(x + 1, yy + s - 3, s - 2, 2, dark);
-  g.rect(x + s - 3, yy + 1, 2, s - 2, dark);
-  g.rect(x + 1, yy + 1, s - 4, 1, lite);
-  for (const [px, py] of [[2, 2], [s - 5, 2], [2, s - 5], [s - 5, s - 5]]) g.rect(x + px, yy + py, 2, 2, dark);
-  if (glow) g.dither(x + 1, yy + 1, s - 2, s - 2, C.white, 0.5);
-  if (label) g.text(label, x + s / 2 - 1, yy + s / 2 - 11, { scale: 2, color: C.white, outline: C.ink, ow: 2, align: 'center' });
 }
 
 // 탭/폰 기기 프레임 → 화면 영역 [x,y,w,h] 반환
@@ -522,21 +411,6 @@ export function iris(g, cx, cy, R, c = C.ink) {
   }
 }
 
-// 모자이크(픽셀화) — 화면 버퍼 후처리
-export function mosaic(g, k) {
-  k = Math.round(k);
-  if (k <= 1) return;
-  const { buf, w, h } = g;
-  for (let by = 0; by < h; by += k) {
-    for (let bx = 0; bx < w; bx += k) {
-      const c = buf[Math.min(h - 1, by + (k >> 1)) * w + Math.min(w - 1, bx + (k >> 1))];
-      const ye = Math.min(h, by + k);
-      const xe = Math.min(w, bx + k);
-      for (let y = by; y < ye; y++) buf.fill(c, y * w + bx, y * w + xe);
-    }
-  }
-}
-
 // 대각선 블록 와이프. t:0→1 덮고, 반대로 1→0 걷어냄
 export function blockWipe(g, t, c = C.ink, cell = 24, reverse = false) {
   if (t <= 0) return;
@@ -553,17 +427,6 @@ export function blockWipe(g, t, c = C.ink, cell = 24, reverse = false) {
       const cyp = j * cell + cell / 2;
       g.rect(cxp - s / 2 - g.ox, cyp - s / 2 - g.oy, Math.ceil(s), Math.ceil(s), c);
     }
-  }
-}
-
-// 가로 속도선
-export function speedLines(g, f, o = {}) {
-  const { n = 14, c = C.white, seed = 9, v = 18, len = 40, y0 = 0, h = 270, w = 480 } = o;
-  for (let i = 0; i < n; i++) {
-    const y = y0 + rnd(i, seed) * h;
-    const L = len * (0.5 + rnd(i, seed + 1));
-    const x = w - (((f * v * (0.7 + rnd(i, seed + 2) * 0.6)) + rnd(i, seed + 3) * w * 2) % (w * 2));
-    g.rect(x, y, L, 1, c);
   }
 }
 

@@ -36,29 +36,6 @@ export function pencil(g, x, y, len, th, tone = TONE.yellow) {
   g.tri(tx, mid - hh, tx, mid + hh, x + len, mid, C.ink);
 }
 
-// 세운 연필 (심이 위). x,y = 왼쪽 아래
-export function pencilUp(g, x, y, len, th, tone = TONE.yellow) {
-  const [base, dark, lite] = tone;
-  const e = Math.round(len * 0.1);
-  const b = Math.max(3, Math.round(len * 0.06));
-  const cone = Math.round(Math.min(len * 0.2, th * 1.6));
-  const yc = y - len + cone;
-  const mid = x + th / 2;
-  g.rect(x - 1, yc - 1, th + 2, y - yc + 2, C.ink);
-  g.tri(x - 1.5, yc, x + th + 1.5, yc, mid, y - len - 1.5, C.ink);
-  g.rbox(x, y - e - 2, th, e + 2, C.pinkH, 2);
-  g.rect(x, y - e - b, th, b, C.gray);
-  for (let i = 1; i < b; i += 2) g.rect(x, y - e - b + i, th, 1, C.grayD);
-  g.rect(x, yc, th, y - e - b - yc, base);
-  g.rect(x, yc, Math.max(1, Math.round(th / 3)), y - e - b - yc, lite);
-  g.rect(x + th - Math.max(1, Math.round(th / 3)), yc, Math.max(1, Math.round(th / 3)), y - e - b - yc, dark);
-  g.tri(x, yc, x + th, yc, mid, y - len, C.skin);
-  g.tri(x + th * 0.55, yc, x + th, yc, mid, y - len, C.skinS);
-  const ty = yc - cone * 0.62;
-  const hw = (th / 2) * 0.38;
-  g.tri(mid - hw, ty, mid + hw, ty, mid, y - len, base === C.yellow ? C.ink : dark);
-}
-
 // 크레파스 (끝이 위). x,y = 왼쪽 아래
 export function crayon(g, x, y, h, w, tone = TONE.red) {
   const [base, dark, lite] = tone;
@@ -90,16 +67,6 @@ export function ruler(g, x, y, w, h, o = {}) {
       g.text(String((n / 50) % 10), x + 3 + i, y + h - 9, { font: 'r7', color: C.brownD });
     }
   }
-}
-
-// 옆으로 누운 책 (계단용). x,y = 왼쪽 위
-export function bookSide(g, x, y, w, h, tone = TONE.blue) {
-  const [base, dark] = tone;
-  g.box(x, y, w, h, base, C.ink, 1, 1);
-  g.rect(x + 5, y + 2, w - 6, h - 4, C.cream);
-  for (let yy = y + 3; yy < y + h - 2; yy += 2) g.rect(x + 5, yy, w - 6, 1, C.paper);
-  g.rect(x + 1, y + 1, 4, h - 2, dark);
-  g.rect(x + 2, y + Math.floor(h / 2) - 1, 2, 2, C.yellow);
 }
 
 // 앞표지 책. x,y = 왼쪽 위
@@ -188,21 +155,6 @@ export function flask(g, cx, by, w, h, o = {}) {
   }
 }
 
-// 스포이트 (위 고무, 아래 유리). cx, y = 고무 위쪽
-export function dropper(g, cx, y, color, o = {}) {
-  const { squeeze = 0, fill = 0.6 } = o;
-  const bw = 7 - squeeze * 2;
-  g.ellipse(cx, y + 6, bw + 1, 7, C.ink);
-  g.ellipse(cx, y + 6, bw, 6, C.orangeD);
-  g.ellipse(cx - 2, y + 4, bw * 0.4, 2, C.orangeL);
-  g.box(cx - 5, y + 11, 10, 3, C.gray, C.ink);
-  g.box(cx - 3, y + 13, 6, 22, C.glass, C.ink);
-  g.rect(cx - 2, y + 14 + 20 * (1 - fill), 4, 20 * fill, color);
-  g.tri(cx - 3, y + 34, cx + 3, y + 34, cx, y + 41, C.ink);
-  g.tri(cx - 2, y + 34, cx + 2, y + 34, cx, y + 39, color);
-  g.rect(cx - 2, y + 15, 1, 8, C.white);
-}
-
 export function magnifier(g, cx, cy, r) {
   g.line(cx + r * 0.7, cy + r * 0.7, cx + r * 1.7, cy + r * 1.7, C.ink, 6);
   g.line(cx + r * 0.75, cy + r * 0.75, cx + r * 1.65, cy + r * 1.65, C.brown, 3);
@@ -211,24 +163,6 @@ export function magnifier(g, cx, cy, r) {
   g.circle(cx, cy, r - 1, C.ink);
   g.circle(cx, cy, r - 2, C.glass);
   g.oval(cx, cy, r - 4, r - 4, C.white, { from: Math.PI * 1.05, to: Math.PI * 1.45, t: 2 });
-}
-
-// 말굽자석 (입이 아래). cx = 중앙, y = 위
-export function magnet(g, cx, y, s = 1) {
-  const R = 9 * s;
-  const T = 5 * s;
-  const cy = y + R;
-  g.save();
-  g.clip(cx - R - 2, y - 2, R * 2 + 4, R + 2);
-  g.ring(cx, cy, R + 1, C.ink, T + 2);
-  g.ring(cx, cy, R, C.red, T);
-  g.restore();
-  for (const sx of [-1, 1]) {
-    const lx = sx < 0 ? cx - R - 1 : cx + R - T;
-    g.rect(lx, cy, T + 2, 10 * s + 1, C.ink);
-    g.rect(lx + 1, cy, T, 6 * s, C.red);
-    g.rect(lx + 1, cy + 6 * s, T, 4 * s, C.gray);
-  }
 }
 
 // 돌아가는 지구본. cx,cy = 구 중심
@@ -316,47 +250,6 @@ export function atom(g, cx, cy, r, f) {
   g.circle(cx, cy, 4, C.ink);
   g.circle(cx, cy, 3, C.red);
   g.rect(cx - 1, cy - 2, 1, 1, C.white);
-}
-
-export function planet(g, cx, cy, r, tone = TONE.purple, ring = C.gold) {
-  const [base, dark, lite] = tone;
-  g.oval(cx, cy, r * 1.8, r * 0.45, C.ink, { t: 3, from: Math.PI, to: Math.PI * 2, rot: -0.25 });
-  g.oval(cx, cy, r * 1.8, r * 0.45, ring, { t: 1, from: Math.PI, to: Math.PI * 2, rot: -0.25 });
-  g.circle(cx, cy, r + 1, C.ink);
-  g.circle(cx, cy, r, base);
-  g.save();
-  g.clip(cx - r, cy - r, r * 2 + 1, r * 2 + 1);
-  g.dither(cx - r, cy + r * 0.2, r * 2 + 1, r * 0.25, dark, 0.5);
-  g.dither(cx - r, cy - r * 0.45, r * 2 + 1, r * 0.2, lite, 0.5);
-  g.restore();
-  g.circle(cx - r * 0.35, cy - r * 0.4, r * 0.18, lite);
-  g.oval(cx, cy, r * 1.8, r * 0.45, C.ink, { t: 3, from: 0, to: Math.PI, rot: -0.25 });
-  g.oval(cx, cy, r * 1.8, r * 0.45, ring, { t: 1, from: 0, to: Math.PI, rot: -0.25 });
-}
-
-// 시험관 꽂이
-export function tubeRack(g, x, y, f = 0) {
-  const cols = [C.pinkH, C.green, C.blue];
-  cols.forEach((c, i) => {
-    const tx = x + 4 + i * 10;
-    g.box(tx, y - 18, 7, 22, C.glass, C.ink, 1, 2);
-    const lv = 7 + Math.round(Math.sin(f * 0.1 + i) * 1);
-    g.rbox(tx + 1, y + 3 - lv, 5, lv, c, 2);
-    g.rect(tx + 1, y - 16, 1, 6, C.white);
-  });
-  g.box(x, y - 6, 36, 4, C.brownL, C.ink);
-  g.box(x, y + 2, 36, 5, C.brown, C.ink);
-}
-
-export function microscope(g, x, y) {
-  // x,y = 바닥 중앙
-  g.box(x - 12, y - 5, 24, 5, C.grayD, C.ink, 1, 1);
-  g.box(x + 3, y - 30, 5, 26, C.gray, C.ink);
-  g.box(x - 8, y - 16, 14, 3, C.grayD, C.ink);
-  g.line(x + 4, y - 30, x - 4, y - 40, C.ink, 7);
-  g.line(x + 4, y - 30, x - 4, y - 40, C.white, 3);
-  g.box(x - 8, y - 46, 7, 6, C.ink2, C.ink);
-  g.box(x - 3, y - 26, 4, 6, C.ink2, C.ink);
 }
 
 // 고양이 (CAT 보상). x,y = 발 아래 중앙

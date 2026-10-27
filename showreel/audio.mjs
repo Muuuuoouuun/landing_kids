@@ -329,6 +329,48 @@ function sfx(m, name, t, arg = 0) {
       [72, 76, 79, 84, 88, 91].forEach((nn, i) => m.voice(t + i * 0.04, i === 5 ? 0.5 : 0.04, mtof(nn), v({ duty: 0.25, vol: 0.07, d: 0.3, s: 0.5, r: 0.15, vib: i === 5 ? 0.01 : 0 })));
       for (let i = 0; i < 6; i++) m.voice(t + 0.25 + i * 0.05, 0.03, mtof(100 + (i % 3) * 3), v({ wave: 'tri', vol: 0.04, d: 0.03, s: 0, pan: (i % 2 ? 0.5 : -0.5) }));
       break;
+    case 'tick':
+      m.voice(t, 0.03, 1800 - arg * 80, v({ wave: 'sine', vol: 0.12, a: 0.0005, d: 0.03, s: 0, r: 0.01 }));
+      m.voice(t, 0.012, 0, v({ wave: 'noise', vol: 0.05, d: 0.012, s: 0, noiseRate: 16000 }));
+      break;
+    case 'buzzer':
+      m.voice(t, 0.22, 220, v({ duty: 0.5, vol: 0.07, d: 0.22, s: 0.7, r: 0.04, lp: 2500 }));
+      m.voice(t, 0.22, 277, v({ duty: 0.5, vol: 0.05, d: 0.22, s: 0.7, r: 0.04, lp: 2500 }));
+      break;
+    case 'erase':
+      m.voice(t, 0.2, 0, v({ wave: 'noise', vol: 0.06, a: 0.03, d: 0.17, s: 0.2, noiseRate: 9000, lp: 2200, pan: -0.3 }));
+      m.voice(t + 0.08, 0.12, 0, v({ wave: 'noise', vol: 0.04, a: 0.02, d: 0.1, s: 0, noiseRate: 12000, lp: 3000, pan: 0.3 }));
+      break;
+    case 'scribble':
+      for (let i = 0; i < 6; i++) {
+        m.voice(t + i * 0.09 + (i % 2) * 0.02, 0.05, 0, v({ wave: 'noise', vol: 0.035, a: 0.01, d: 0.04, s: 0, noiseRate: 14000 + (i % 3) * 3000, lp: 6000, pan: -0.5 + arg * 0.33 }));
+      }
+      break;
+    case 'stamp':
+      m.voice(t, 0.1, sweep(180, 70, 0.1), v({ wave: 'sine', vol: 0.3, a: 0.001, d: 0.1, s: 0 }));
+      m.voice(t, 0.03, 0, v({ wave: 'noise', vol: 0.1, d: 0.03, s: 0, noiseRate: 7000 }));
+      break;
+    case 'zap':
+      m.voice(t, 0.18, (x) => 120 + 60 * Math.sin(x * 260), v({ duty: 0.5, vol: 0.05, d: 0.18, s: 0.4, lp: 3000 }));
+      m.voice(t, 0.14, 0, v({ wave: 'noise', vol: 0.04, a: 0.002, d: 0.14, s: 0, noiseRate: 24000, lp: 9000 }));
+      break;
+    case 'rec':
+      m.voice(t, 0.08, mtof(81), v({ wave: 'sine', vol: 0.1, d: 0.08, s: 0.5 }));
+      m.voice(t + 0.1, 0.12, mtof(88), v({ wave: 'sine', vol: 0.1, d: 0.12, s: 0.3, r: 0.05 }));
+      break;
+    case 'voice': {
+      // 옹알이 같은 말소리: 0~9 = AI(낮고 또박또박), 10~ = 아이(높고 통통)
+      const kid = arg >= 10;
+      const w = arg % 10;
+      const base = kid ? 74 : 67;
+      const syl = [1, 1, 2][w] + 1;
+      for (let i = 0; i < syl; i++) {
+        const nn = base + [0, 4, 2, 7][(i + w) % 4] + (i === syl - 1 ? -2 : 0);
+        const tt = t + i * 0.075;
+        m.voice(tt, 0.06, (x) => mtof(nn) * (1 + 0.06 * Math.sin(x * 60)), v({ duty: kid ? 0.25 : 0.375, vol: 0.06, a: 0.005, d: 0.05, s: 0.5, r: 0.02, lp: kid ? 3500 : 2400, pan: kid ? 0.25 : -0.25 }));
+      }
+      break;
+    }
     default:
       break;
   }

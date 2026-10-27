@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FadeIn, ScaleIn } from './motion';
 
 const points = [
-  { icon: '👆', label: '터치 · 드래그 · 발표로 직접 참여', color: 'bg-[var(--super-pink)]' },
-  { icon: '📡', label: '온라인 라이브도 교실처럼 생생하게', color: 'bg-[var(--super-blue)]' },
-  { icon: '🧒', label: '5세부터 초등까지 맞춤', color: 'bg-[#FFF9C4]' },
+  { icon: '⏱️', label: '타이머 퀴즈 · 개인 칠판 · 랜덤 선택', color: 'bg-[var(--super-pink)]' },
+  { icon: '🔬', label: '가상 실험 · AI 스피킹 따라 읽기', color: 'bg-[var(--super-blue)]' },
+  { icon: '🏠', label: '집에서도 학원에서도 실시간으로', color: 'bg-[#FFF9C4]' },
 ];
 
 export default function Showreel() {
@@ -80,16 +80,16 @@ export default function Showreel() {
           </FadeIn>
           <FadeIn delay={0.15}>
             <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-black leading-tight mb-6">
-              수업이 한 판의 게임처럼,<br />
+              온라인 수업도 교실처럼,<br />
               <span className="text-white bg-[var(--super-orange)] px-4 pb-1 inline-block border-4 border-[var(--super-text)] shadow-[6px_6px_0px_0px_#000] rotate-1 mt-2">
-                놀면서 배우는 픽셀 모험
+                실시간으로 함께 노는 수업
               </span>
             </h2>
           </FadeIn>
           <FadeIn delay={0.3}>
             <p className="text-white/80 font-bold text-lg md:text-xl max-w-2xl mx-auto">
-              알파벳 블록을 터치하고, 수식 다리를 끌어 맞추고, 실험으로 새싹을 키웁니다.{' '}<br className="hidden md:block" />
-              온라인 라이브 수업에서도 함께 쓰는 칠판·손들기·응답기·트로피로 교실처럼 신나게.
+              타이머 퀴즈, 개인 칠판, 랜덤 선택과 트로피, 가상 실험, AI 스피킹 따라 읽기까지.{' '}<br className="hidden md:block" />
+              집에서 접속한 아이도 학원 교실의 아이도 한 수업에서 실시간으로 함께합니다.
             </p>
           </FadeIn>
         </div>
@@ -121,7 +121,7 @@ export default function Showreel() {
                 onPlay={() => setPlaying(true)}
                 onPause={() => setPlaying(false)}
                 onClick={togglePlay}
-                aria-label="리틀마인즈 22초 쇼릴: 알파벳·수학·과학 인터랙티브 수업과 온라인 라이브 수업"
+                aria-label="리틀마인즈 22초 쇼릴: 타이머 퀴즈, 개인 칠판, 랜덤 선택, 트로피, 가상 실험, AI 스피킹이 있는 실시간 온라인 수업"
               >
                 <source src="/showreel/little-minds-showreel.mp4" type="video/mp4" />
                 <source src="/showreel/little-minds-showreel.webm" type="video/webm" />
